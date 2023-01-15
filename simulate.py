@@ -13,7 +13,8 @@ p.setAdditionalSearchPath(pybullet_data.getDataPath())
 numSteps = 1000
 waitTime = 1/1000
 amplitude_backLeg, frequency_backLeg, offset_backLeg = np.pi/4, 10, 0 
-amplitude_frontLeg, frequency_frontLeg, offset_frontLeg = np.pi/4, 50, -np.pi/6
+amplitude_frontLeg, frequency_frontLeg, offset_frontLeg = np.pi/4, 50, np.pi/6
+# amplitude_frontLeg, frequency_frontLeg, offset_frontLeg = np.pi/4, 10, np.pi
 p.setGravity(0, 0, -9.8)
 planeId = p.loadURDF("plane.urdf")
 robotId = p.loadURDF("body.urdf")
