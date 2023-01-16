@@ -5,35 +5,32 @@ import pyrosim.pyrosim as pyrosim
 import numpy as np
 import math
 import random
+import constants as c
 
 
 
 physicsClient = p.connect(p.GUI)
 p.setAdditionalSearchPath(pybullet_data.getDataPath())
-numSteps = 1000
-waitTime = 1/1000
-amplitude_backLeg, frequency_backLeg, offset_backLeg = np.pi/4, 10, 0 
-amplitude_frontLeg, frequency_frontLeg, offset_frontLeg = np.pi/4, 50, np.pi/6
-# amplitude_frontLeg, frequency_frontLeg, offset_frontLeg = np.pi/4, 10, np.pi
+
 p.setGravity(0, 0, -9.8)
 planeId = p.loadURDF("plane.urdf")
 robotId = p.loadURDF("body.urdf")
 p.loadSDF("world.sdf")
 pyrosim.Prepare_To_Simulate(robotId)
 
-backLegSensorValues = np.zeros(numSteps)
-frontLegSensorValues = np.zeros(numSteps)
+backLegSensorValues = np.zeros(c.numSteps)
+frontLegSensorValues = np.zeros(c.numSteps)
 
-x = np.linspace(0, 2*np.pi, numSteps)
-targetAngles_backLeg = np.sin(frequency_backLeg*x + offset_backLeg) * amplitude_backLeg
-targetAngles_frontLeg = np.sin(frequency_frontLeg*x + offset_frontLeg) * amplitude_frontLeg
+x = np.linspace(0, 2*np.pi, c.numSteps)
+targetAngles_backLeg = np.sin(c.frequency_backLeg*x + c.offset_backLeg) * c.amplitude_backLeg
+targetAngles_frontLeg = np.sin(c.frequency_frontLeg*x + c.offset_frontLeg) * c.amplitude_frontLeg
 # with open("data/motorSinSignalFrontLeg.npy", 'wb') as f:
 # 	np.save(f, targetAngles_frontLeg)
 
 # with open("data/motorSinSignalBackLeg.npy", 'wb') as f:
 # 	np.save(f, targetAngles_backLeg)
 # exit()
-for i in range(numSteps):
+for i in range(c.numSteps):
 	p.stepSimulation()
 	backLegSensorValues[i] = pyrosim.Get_Touch_Sensor_Value_For_Link("BackLeg")
 	frontLegSensorValues[i] = pyrosim.Get_Touch_Sensor_Value_For_Link("FrontLeg")
@@ -44,7 +41,7 @@ for i in range(numSteps):
 								targetPosition = targetAngles_frontLeg[i], \
 								maxForce = 30)
 
-	time.sleep(waitTime)
+	time.sleep(c.waitTime)
 	# print("step:", i)
 print(backLegSensorValues)
 print(frontLegSensorValues)
