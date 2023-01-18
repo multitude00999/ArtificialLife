@@ -6,7 +6,7 @@ import pybullet as p
 class MOTOR:
 	def __init__(self, jointName):
 		self.jointName = jointName
-		self.maxForce = 30
+		self.maxForce = 25
 
 
 	def Set_Value(self, robotId, desiredAngle):
