@@ -1,4 +1,5 @@
 import pyrosim.pyrosim as pyrosim
+import random
 
 length, breadth, height = 1, 1, 1
 x1, y1, z1 = -3, 3, 0.5
@@ -29,14 +30,10 @@ def Generate_Brain():
 	pyrosim.Send_Motor_Neuron( name = 4 , jointName = "Torso_FrontLeg")
 
 	# motion towards right
-	pyrosim.Send_Synapse( sourceNeuronName = 0 , targetNeuronName = 3 , weight = 1.0 )
-	pyrosim.Send_Synapse( sourceNeuronName = 1 , targetNeuronName = 3 , weight = 1.0 )
-	pyrosim.Send_Synapse( sourceNeuronName = 0 , targetNeuronName = 4 , weight = 1.0 )
-	pyrosim.Send_Synapse( sourceNeuronName = 2 , targetNeuronName = 4 , weight = 1.0 )
-
-	# # more synapses
-	pyrosim.Send_Synapse( sourceNeuronName = 1 , targetNeuronName = 4 , weight = 1.0 )
-	pyrosim.Send_Synapse( sourceNeuronName = 2 , targetNeuronName = 3 , weight = 1.0 )
+	for i in range(3):
+		for j in range(3,5):
+			pyrosim.Send_Synapse( sourceNeuronName = i , targetNeuronName = j , weight = random.uniform(-1,1) )
+	
 	pyrosim.End()
 
 Create_World()
