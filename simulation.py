@@ -25,15 +25,10 @@ class SIMULATION:
 			self.robot.Sense(t)
 			self.robot.Think()
 			self.robot.Act(t)
-			self.robot.Get_Fitness()
 			time.sleep(c.waitTime)
-			# if t%100 ==0:
-			# 	print("step:", t)
 
 	def Get_Fitness(self):
 		self.robot.Get_Fitness()
-
-
 
 
 	def __del__(self):
