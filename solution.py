@@ -105,7 +105,7 @@ class SOLUTION():
 
 		for currentRow in range(self.weights.shape[0]):
 			for currentCol in range(self.weights.shape[1]):
-				pyrosim.Send_Synapse( sourceNeuronName = currentRow , targetNeuronName = currentCol+5 , weight = self.weights[currentRow][currentCol])
+				pyrosim.Send_Synapse( sourceNeuronName = currentRow , targetNeuronName = currentCol+9 , weight = self.weights[currentRow][currentCol])
 		
 		pyrosim.End()
 		while not os.path.exists("brain" + str(self.myID) + ".nndf"):
