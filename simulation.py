@@ -7,8 +7,9 @@ import constants as c
 import time
 
 class SIMULATION:
-	def __init__(self, directOrGUI):
+	def __init__(self, directOrGUI, solutionID):
 		self.directOrGUI = directOrGUI
+		self.solutionID = solutionID
 		if self.directOrGUI == "DIRECT":
 			self.physicsClient = p.connect(p.DIRECT)
 		else:
@@ -17,7 +18,7 @@ class SIMULATION:
 		p.setGravity(0, 0, -9.8)
 
 		self.world = WORLD(self.physicsClient)
-		self.robot = ROBOT()
+		self.robot = ROBOT(self.solutionID)
 
 	def Run(self):
 
@@ -26,8 +27,7 @@ class SIMULATION:
 			self.robot.Sense(t)
 			self.robot.Think()
 			self.robot.Act(t)
-			self.robot.Get_Fitness()
-
+			
 			if self.directOrGUI == "GUI":
 				time.sleep(c.waitTime)
 			# if t%100 ==0:

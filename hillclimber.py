@@ -16,10 +16,7 @@ class HILL_CLIMBER():
 		self.Spawn()
 		self.Mutate()
 		self.child.Evaluate("DIRECT")
-		print("\n================")
-		print("parent fitness", self.parent.fitness)
-		print("child fitness", self.child.fitness)
-		print("================\n \n")
+		self.Print()
 		self.Select()
 
 	def Spawn(self):
@@ -37,3 +34,9 @@ class HILL_CLIMBER():
 
 	def Show_Best(self):
 		self.parent.Evaluate("GUI")
+
+	def Print(self):
+		print("\n================")
+		print("parent fitness", self.parent.fitness)
+		print("child fitness", self.child.fitness)
+		print("================\n \n")
