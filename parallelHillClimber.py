@@ -13,16 +13,11 @@ class PARALLEL_HILL_CLIMBER():
 			self.parents[i] = SOLUTION(self.nextAvailableID)
 			self.nextAvailableID+=1
 
-		
-
 	def Evolve(self):
 		self.Evaluate(self.parents)
-
-
 		for currentGeneration in range(c.numberOfGenerations):
 			print("====== generation ", currentGeneration , " ================ ")
 			self.Evolve_For_One_Generation()
-		# pass
 
 	def Evolve_For_One_Generation(self):
 		self.Spawn()
@@ -54,8 +49,6 @@ class PARALLEL_HILL_CLIMBER():
 
 
 	def Select(self):
-		# print("parent fitness", self.parent.fitness)
-		# print("child fitness", self.child.fitness)
 		for parent in self.parents:
 			if self.parents[parent].fitness > self.children[parent].fitness:
 				self.parents[parent] = copy.deepcopy(self.children[parent])
@@ -76,6 +69,7 @@ class PARALLEL_HILL_CLIMBER():
 		for parent in self.parents:
 			print("\nparent fitness:", self.parents[parent].fitness, "child fitness:", self.children[parent].fitness , "\n")
 
-	# def __del__(self):
-	# 	os.system("rm fitness*.txt")
-	# 	os.system("rm brain*.txt")
+	def __del__(self):
+		os.system("rm fitness*.txt")
+		os.system("rm brain*.txt")
+		os.system("rm 1")

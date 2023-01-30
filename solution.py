@@ -4,6 +4,8 @@ import os
 import random
 import sys
 import time
+import warnings
+# warnings.filterwarnings("ignore")
 
 class SOLUTION():
 	def __init__(self, myID):
@@ -18,19 +20,19 @@ class SOLUTION():
 		self.Create_World()
 		self.Generate_Body()
 		self.Generate_Brain()
-		os.system("python3 simulate.py " + mode +  " " + str(self.myID) + " &")
+		os.system("python3 simulate.py " + mode +  " " + str(self.myID) + " " + "2&>1" + " &")
 		fitnessFile = "fitness" + str(self.myID) + ".txt"
 		while not os.path.exists(fitnessFile):
 			time.sleep(0.01)
 		with open(fitnessFile, 'r') as f:
 			self.fitness = float(f.readlines()[0])
-		print("fitness: ", self.fitness)
+		# print("fitness: ", self.fitness)
 
 	def Start_Simulation(self, mode):
 		self.Create_World()
 		self.Generate_Body()
 		self.Generate_Brain()
-		os.system("python3 simulate.py " + mode +  " " + str(self.myID) + " &")
+		os.system("python3 simulate.py " + mode +  " " + str(self.myID) + " " + "2&>1" + " &")
 
 	def Wait_For_Simulation_To_End(self):
 		fitnessFile = "fitness" + str(self.myID) + ".txt"
@@ -41,7 +43,7 @@ class SOLUTION():
 			self.fitness = float(f.readlines()[0])
 
 		os.system("rm " + fitnessFile)
-		print("fitness for", self.myID,  self.fitness)
+		# print("fitness for", self.myID,  self.fitness)
 		
 
 	def Create_World(self):
