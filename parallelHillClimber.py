@@ -5,8 +5,10 @@ import time
 import os
 class PARALLEL_HILL_CLIMBER():
 	def __init__(self):
-		os.system("rm brain*.nndf")
-		os.system("rm fitness*.txt")
+		for file in os.listdir("."):
+			if file.startswith("brain") or file.startswith("fitness"):
+				os.system("rm {}".format(file))
+
 		self.parents = {}
 		self.nextAvailableID = 0
 		for i in range(c.populationSize):
@@ -67,7 +69,7 @@ class PARALLEL_HILL_CLIMBER():
 
 	def Print(self):
 		for parent in self.parents:
-			print("\nparent fitness:", self.parents[parent].fitness, "child fitness:", self.children[parent].fitness , "\n")
+			print("\nparent fitness:", self.parents[parent].fitness, "child fitness:", self.children[parent].fitness )
 
 	# def __del__(self):
 	# 	os.system("rm fitness*.txt")
