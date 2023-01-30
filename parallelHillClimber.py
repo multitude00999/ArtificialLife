@@ -6,7 +6,7 @@ import os
 class PARALLEL_HILL_CLIMBER():
 	def __init__(self):
 		os.system("rm brain*.nndf")
-		os.system("rm fitness*.nndf")
+		os.system("rm fitness*.txt")
 		self.parents = {}
 		self.nextAvailableID = 0
 		for i in range(c.populationSize):
@@ -69,7 +69,7 @@ class PARALLEL_HILL_CLIMBER():
 		for parent in self.parents:
 			print("\nparent fitness:", self.parents[parent].fitness, "child fitness:", self.children[parent].fitness , "\n")
 
-	def __del__(self):
-		os.system("rm fitness*.txt")
-		os.system("rm brain*.txt")
-		os.system("rm 1")
+	# def __del__(self):
+	# 	os.system("rm fitness*.txt")
+	# 	os.system("rm brain*.nndf")
+	# 	os.system("rm 1")
