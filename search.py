@@ -8,7 +8,3 @@ phc.Evolve()
 t2 = time.time()
 print("time taken", t2-t1)
 phc.Show_Best()
-# numIters = 5
-# for i in range(numIters):
-# 	os.system("python3 generate.py")
-# 	os.system("python3 simulate.py")
