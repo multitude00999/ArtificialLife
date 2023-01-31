@@ -19,8 +19,8 @@ class SOLUTION():
 		self.Create_World()
 		self.Generate_Body()
 		self.Generate_Brain()
-		os.system("python3 simulate.py " + mode +  " " + str(self.myID) + " " + "2&>1" + " &")
-		# os.system("python3 simulate.py " + mode +  " " + str(self.myID) + " &")
+		# os.system("python3 simulate.py " + mode +  " " + str(self.myID) + " " + "2&>1" + " &")
+		os.system("python3 simulate.py " + mode +  " " + str(self.myID) + " &")
 		fitnessFile = "fitness" + str(self.myID) + ".txt"
 		while not os.path.exists(fitnessFile):
 			time.sleep(0.01)
@@ -104,9 +104,9 @@ class SOLUTION():
 		pyrosim.Send_Motor_Neuron( name = 10 , jointName = "LeftLeg_LeftLowerLeg")
 		pyrosim.Send_Motor_Neuron( name = 11 , jointName = "RightLeg_RightLowerLeg")
 
-		for currentRow in range(self.weights.shape[0]):
-			for currentCol in range(self.weights.shape[1]):
-				pyrosim.Send_Synapse( sourceNeuronName = currentRow , targetNeuronName = currentCol+4 , weight = self.weights[currentRow][currentCol])
+		for currentRow in range(c.numSensorNeurons):
+			for currentCol in range(c.numMotorNeurons):
+				pyrosim.Send_Synapse( sourceNeuronName = currentRow , targetNeuronName = currentCol+c.numSensorNeurons , weight = self.weights[currentRow][currentCol])
 		
 		pyrosim.End()
 		while not os.path.exists("brain" + str(self.myID) + ".nndf"):
