@@ -65,6 +65,7 @@ class PARALLEL_HILL_CLIMBER():
 
 		print("best parent:", best_parent, "fitness:", best_fitness)
 		self.parents[best_parent].Start_Simulation("GUI")
+		self.parents[best_parent].Wait_For_Simulation_To_End() # temporary fix so that final fitness file gets deleted
 		
 
 	def Print(self):
@@ -72,6 +73,6 @@ class PARALLEL_HILL_CLIMBER():
 			print("\nparent fitness:", self.parents[parent].fitness, "child fitness:", self.children[parent].fitness , "\n")
 
 	def __del__(self):
-		os.system("rm fitness*.txt")
-		os.system("rm brain*.txt")
+		# os.system("rm fitness*.txt")
+		# os.system("rm brain*.txt")
 		os.system("rm 1")
