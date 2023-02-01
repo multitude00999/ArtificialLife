@@ -19,8 +19,8 @@ class SOLUTION():
 		self.Create_World()
 		self.Generate_Body()
 		self.Generate_Brain()
-		# os.system("python3 simulate.py " + mode +  " " + str(self.myID) + " " + "2&>1" + " &")
-		os.system("python3 simulate.py " + mode +  " " + str(self.myID) + " &")
+		os.system("python3 simulate.py " + mode +  " " + str(self.myID) + " " + "2&>1" + " &")
+		# os.system("python3 simulate.py " + mode +  " " + str(self.myID) + " &")
 		fitnessFile = "fitness" + str(self.myID) + ".txt"
 		while not os.path.exists(fitnessFile):
 			time.sleep(0.01)
@@ -29,8 +29,9 @@ class SOLUTION():
 		# print("fitness: ", self.fitness)
 
 	def Start_Simulation(self, mode):
-		self.Create_World()
-		self.Generate_Body()
+		if self.myID == 0: # generate body and world only once
+			self.Create_World()
+			self.Generate_Body()
 		self.Generate_Brain()
 		os.system("python3 simulate.py " + mode +  " " + str(self.myID) + " " + "2&>1" + " &")
 		# os.system("python3 simulate.py " + mode +  " " + str(self.myID) + " &")
