@@ -29,8 +29,9 @@ class SOLUTION():
 		# print("fitness: ", self.fitness)
 
 	def Start_Simulation(self, mode):
-		self.Create_World()
-		self.Generate_Body()
+		if self.myID == 0: # generate body and brain only one time (temporary fix)
+			self.Create_World()
+			self.Generate_Body()
 		self.Generate_Brain()
 		os.system("python3 simulate.py " + mode +  " " + str(self.myID) + " " + "2&>1" + " &")
 
