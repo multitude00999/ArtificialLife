@@ -82,7 +82,7 @@ class PARALLEL_HILL_CLIMBER():
 
 	def __del__(self):
 		for file in os.listdir("."):
-			if file == "1":
+			if file.startswith("brain") or file.startswith("fitness") or file == "1":
 				os.system("rm {}".format(file))
 	# 	# os.system("rm fitness*.txt")
 	# 	# os.system("rm brain*.nndf")

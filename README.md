@@ -1,14 +1,25 @@
-# ArtificialLife
+# DogBot
 
-Following is a submission for assignment 5
+Following is a submission for assignment 5. The codebase is developed as part of ludobots course [link](https://www.reddit.com/r/ludobots/).
+Pyrosim [git](https://github.com/jbongard/pyrosim)
 
-# demo
 
-<vidoe>
+# Demo
+
+Youtube video [link](https://youtube.com/shorts/Ebtugy_iO3k?feature=share)
+
+# Installation
+
+Follow instruction given [here](https://www.reddit.com/r/ludobots/wiki/installation/)
+
+# Running the code
+
+After installing pyrosim and pybullet, clone the repository and change into the directory.
+Now run ```python3 search.py``` . It'll first show the random robot and then parallel hill climber wil run. After that best evolved bot is simulated.
 
 # Task
 
-Task of the creature is to chase the ball. Robot dog will try to go newr to the speherical ball.
+Task of the creature is to chase the ball. Robot dog will try to go near the speherical ball.
 
 # world 
 
@@ -27,7 +38,7 @@ and total 8 joints
 4 between upper limb and lower limb
 
 
-# fitness
+# Fitness
 
 Fitness is the distance of the robot dog's torso from the ball. This is calculated as
 
@@ -39,8 +50,8 @@ So in order to go close to the ball. The robot will try to minimize this distanc
 
 # Training parameters
 
-numSteps = 1000
-waitTime = 1/1000
+numSteps = 4000
+waitTime = 1/10000
 amplitude, frequency, offset = np.pi/4, 10, 0 
 numberOfGenerations = 10
 populationSize = 10

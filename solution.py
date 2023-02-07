@@ -58,16 +58,16 @@ class SOLUTION():
 
 	def Generate_Body(self):
 		pyrosim.Start_URDF("body.urdf")
-		pyrosim.Send_Cube(name="Torso", pos = [0, 0, 1]  , size=[1.5, 0.5, 0.5],mass=1)
-		pyrosim.Send_Cube(name="FrontLeftLeg", pos = [0, 0, -0.25]  , size=[0.2, 0.2, 0.5],mass=0.3)
+		pyrosim.Send_Cube(name="Torso", pos = [0, 0, 1]  , size=[1.5, 0.5, 0.5], mass = 1 )
+		pyrosim.Send_Cube(name="FrontLeftLeg", pos = [0, 0, -0.25]  , size=[0.2, 0.2, 0.5], mass=0.3)
 		pyrosim.Send_Cube(name="FrontRightLeg", pos = [0, 0, -0.25]  , size=[0.2, 0.2, 0.5], mass=0.3)
-		pyrosim.Send_Cube(name="BackLeftLeg", pos = [0, 0, -0.25]  , size=[0.2, 0.2, 0.5],mass=0.3)
+		pyrosim.Send_Cube(name="BackLeftLeg", pos = [0, 0, -0.25]  , size=[0.2, 0.2, 0.5], mass=0.3)
 		pyrosim.Send_Cube(name="BackRightLeg", pos = [0, 0, -0.25]  , size=[0.2, 0.2, 0.5],mass=0.3)
 
-		pyrosim.Send_Cube(name="FrontLowerLeftLeg", pos = [0, 0, -0.25]  , size=[0.2, 0.2, 0.5],mass=0.2)
-		pyrosim.Send_Cube(name="FrontLowerRightLeg", pos = [0, 0, -0.25]  , size=[0.2, 0.2, 0.5],mass=0.2)
-		pyrosim.Send_Cube(name="BackLowerLeftLeg", pos = [0, 0, -0.25]  , size=[0.2, 0.2, 0.5],mass=0.2)
-		pyrosim.Send_Cube(name="BackLowerRightLeg", pos = [0, 0, -0.25]  , size=[0.2, 0.2, 0.5],mass=0.2)
+		pyrosim.Send_Cube(name="FrontLowerLeftLeg", pos = [0, 0, -0.25]  , size=[0.1, 0.1, 0.5],mass=0.1)
+		pyrosim.Send_Cube(name="FrontLowerRightLeg", pos = [0, 0, -0.25]  , size=[0.1, 0.1, 0.5],mass=0.1)
+		pyrosim.Send_Cube(name="BackLowerLeftLeg", pos = [0, 0, -0.25]  , size=[0.1, 0.1, 0.5],mass=0.1)
+		pyrosim.Send_Cube(name="BackLowerRightLeg", pos = [0, 0, -0.25]  , size=[0.1, 0.1, 0.5],mass=0.1)
 
 
 

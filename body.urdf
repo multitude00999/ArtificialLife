@@ -112,13 +112,13 @@
     <link name="FrontLowerLeftLeg">
         <inertial>
             <origin xyz="0 0 -0.25" rpy="0 0 0"/>
-            <mass value="0.2" />
+            <mass value="0.1" />
             <inertia ixx="100" ixy="0" ixz="0" iyy="100" iyz="0" izz="100" />
         </inertial>
         <visual>
             <origin xyz="0 0 -0.25" rpy="0 0 0"/>
             <geometry>
-                <box size="0.2 0.2 0.5" />
+                <box size="0.1 0.1 0.5" />
             </geometry>
             <material name="Cyan">
                 <color rgba="0 1.0 1.0 1.0"/>
@@ -127,20 +127,20 @@
         <collision>
             <origin xyz="0 0 -0.25" rpy="0 0 0"/>
             <geometry>
-                <box size="0.2 0.2 0.5" />
+                <box size="0.1 0.1 0.5" />
             </geometry>
         </collision>
     </link>
     <link name="FrontLowerRightLeg">
         <inertial>
             <origin xyz="0 0 -0.25" rpy="0 0 0"/>
-            <mass value="0.2" />
+            <mass value="0.1" />
             <inertia ixx="100" ixy="0" ixz="0" iyy="100" iyz="0" izz="100" />
         </inertial>
         <visual>
             <origin xyz="0 0 -0.25" rpy="0 0 0"/>
             <geometry>
-                <box size="0.2 0.2 0.5" />
+                <box size="0.1 0.1 0.5" />
             </geometry>
             <material name="Cyan">
                 <color rgba="0 1.0 1.0 1.0"/>
@@ -149,20 +149,20 @@
         <collision>
             <origin xyz="0 0 -0.25" rpy="0 0 0"/>
             <geometry>
-                <box size="0.2 0.2 0.5" />
+                <box size="0.1 0.1 0.5" />
             </geometry>
         </collision>
     </link>
     <link name="BackLowerLeftLeg">
         <inertial>
             <origin xyz="0 0 -0.25" rpy="0 0 0"/>
-            <mass value="0.2" />
+            <mass value="0.1" />
             <inertia ixx="100" ixy="0" ixz="0" iyy="100" iyz="0" izz="100" />
         </inertial>
         <visual>
             <origin xyz="0 0 -0.25" rpy="0 0 0"/>
             <geometry>
-                <box size="0.2 0.2 0.5" />
+                <box size="0.1 0.1 0.5" />
             </geometry>
             <material name="Cyan">
                 <color rgba="0 1.0 1.0 1.0"/>
@@ -171,20 +171,20 @@
         <collision>
             <origin xyz="0 0 -0.25" rpy="0 0 0"/>
             <geometry>
-                <box size="0.2 0.2 0.5" />
+                <box size="0.1 0.1 0.5" />
             </geometry>
         </collision>
     </link>
     <link name="BackLowerRightLeg">
         <inertial>
             <origin xyz="0 0 -0.25" rpy="0 0 0"/>
-            <mass value="0.2" />
+            <mass value="0.1" />
             <inertia ixx="100" ixy="0" ixz="0" iyy="100" iyz="0" izz="100" />
         </inertial>
         <visual>
             <origin xyz="0 0 -0.25" rpy="0 0 0"/>
             <geometry>
-                <box size="0.2 0.2 0.5" />
+                <box size="0.1 0.1 0.5" />
             </geometry>
             <material name="Cyan">
                 <color rgba="0 1.0 1.0 1.0"/>
@@ -193,7 +193,7 @@
         <collision>
             <origin xyz="0 0 -0.25" rpy="0 0 0"/>
             <geometry>
-                <box size="0.2 0.2 0.5" />
+                <box size="0.1 0.1 0.5" />
             </geometry>
         </collision>
     </link>
