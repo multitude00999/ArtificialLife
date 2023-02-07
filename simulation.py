@@ -7,9 +7,10 @@ import constants as c
 import time
 
 class SIMULATION:
-	def __init__(self, directOrGUI, solutionID):
+	def __init__(self, directOrGUI, solutionID, deleteBrain):
 		self.directOrGUI = directOrGUI
 		self.solutionID = solutionID
+		self.deleteBrain = deleteBrain
 		if self.directOrGUI == "DIRECT":
 			self.physicsClient = p.connect(p.DIRECT)
 		else:
@@ -18,7 +19,7 @@ class SIMULATION:
 		p.setGravity(0, 0, -9.8)
 
 		self.world = WORLD(self.physicsClient)
-		self.robot = ROBOT(self.solutionID, self.world.objects)
+		self.robot = ROBOT(self.solutionID, self.world.objects, self.deleteBrain)
 
 	def Run(self):
 

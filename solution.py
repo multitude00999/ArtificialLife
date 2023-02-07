@@ -28,12 +28,12 @@ class SOLUTION():
 			self.fitness = float(f.readlines()[0])
 		# print("fitness: ", self.fitness)
 
-	def Start_Simulation(self, mode):
+	def Start_Simulation(self, mode, deleteBrain):
 		if self.myID == 0: # generate body and world only once
 			self.Create_World()
 			self.Generate_Body()
 		self.Generate_Brain()
-		os.system("python3 simulate.py " + mode +  " " + str(self.myID) + " " + "2&>1" + " &")
+		os.system("python3 simulate.py " + mode +  " " + str(self.myID) + " " + str(deleteBrain) +" "+ "2&>1" + " &")
 		# os.system("python3 simulate.py " + mode +  " " + str(self.myID) + " &")
 
 	def Wait_For_Simulation_To_End(self):

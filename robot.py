@@ -9,7 +9,7 @@ import os
 
 
 class ROBOT():
-	def __init__(self, solutionID, objects):
+	def __init__(self, solutionID, objects, deleteBrain):
 		self.sensors = {}
 		self.motors = {}
 		self.solutionID = solutionID
@@ -19,7 +19,10 @@ class ROBOT():
 		pyrosim.Prepare_To_Simulate(self.robotId)
 		self.Prepare_To_Sense()
 		self.Prepare_To_Act()
-		os.system("rm " + "brain" + str(self.solutionID) + ".nndf")
+		if deleteBrain == "1":
+			os.system("rm " + "brain" + str(self.solutionID) + ".nndf")
+		else:
+			os.system("mv " + "brain" + str(self.solutionID) + ".nndf" + " brainBest.nndf")
 
 	def Prepare_To_Sense(self):
 		for linkName in pyrosim.linkNamesToIndices:
@@ -61,7 +64,7 @@ class ROBOT():
 		position = posAndOrientation[0]
 		xPositionTarget = position[0]
 		yPositionTarget = position[1]
-		dist = (xPositionTarget-xPositionRobot)**2 + (yPositionTarget-yPositionRobot)**2
+		dist = np.sqrt((xPositionTarget-xPositionRobot)**2 + (yPositionTarget-yPositionRobot)**2)
 		# positionOfLinkZero = stateOfLinkZero[0]
 		# xCoordinateOfLinkZero = positionOfLinkZero[0]
 		# print("x cord of link 0",xCoordinateOfLinkZero)

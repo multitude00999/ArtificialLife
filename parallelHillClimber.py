@@ -4,7 +4,7 @@ import copy
 import time
 import os
 class PARALLEL_HILL_CLIMBER():
-	def __init__(self):
+	def __init__(self, show_random):
 		for file in os.listdir("."):
 			if file.startswith("brain") or file.startswith("fitness"):
 				os.system("rm {}".format(file))
@@ -14,6 +14,9 @@ class PARALLEL_HILL_CLIMBER():
 		for i in range(c.populationSize):
 			self.parents[i] = SOLUTION(self.nextAvailableID)
 			self.nextAvailableID+=1
+
+		if show_random:
+			self.show_random()
 
 	def Evolve(self):
 		self.Evaluate(self.parents)
@@ -43,7 +46,7 @@ class PARALLEL_HILL_CLIMBER():
 
 	def Evaluate(self, solutions):
 		for i in range(c.populationSize):
-			solutions[i].Start_Simulation("DIRECT")
+			solutions[i].Start_Simulation("DIRECT", "1")
 
 
 		for i in range(c.populationSize):
@@ -64,8 +67,13 @@ class PARALLEL_HILL_CLIMBER():
 				best_fitness = self.parents[parent].fitness
 
 		print("best parent:", best_parent, "fitness:", best_fitness)
-		self.parents[best_parent].Start_Simulation("GUI")
+
+		self.parents[best_parent].Start_Simulation("GUI", "0")
 		self.parents[best_parent].Wait_For_Simulation_To_End() # temporary fix to remove final fitness file
+
+	def show_random(self):
+		self.parents[0].Start_Simulation("GUI", "1")
+		self.parents[0].Wait_For_Simulation_To_End()
 		
 
 	def Print(self):
@@ -74,7 +82,7 @@ class PARALLEL_HILL_CLIMBER():
 
 	def __del__(self):
 		for file in os.listdir("."):
-			if file.startswith("brain") or file.startswith("fitness") or file == "1":
+			if file == "1":
 				os.system("rm {}".format(file))
 	# 	# os.system("rm fitness*.txt")
 	# 	# os.system("rm brain*.nndf")
