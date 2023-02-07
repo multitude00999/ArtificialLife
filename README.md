@@ -6,7 +6,7 @@ Pyrosim [git](https://github.com/jbongard/pyrosim)
 
 # Demo
 
-Youtube video [link](https://youtube.com/shorts/Ebtugy_iO3k?feature=share)
+Youtube video [link](https://www.youtube.com/watch?v=Ebtugy_iO3k)
 
 # Installation
 
