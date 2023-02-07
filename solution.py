@@ -51,7 +51,7 @@ class SOLUTION():
 	def Create_World(self):
 		pyrosim.Start_SDF("world.sdf")
 		# pyrosim.Send_Cube(name="Box", pos = [-5, 5, 2.5]  , size=[1, 1, 1], mass=10000)
-		pyrosim.Send_Sphere(name="Ball", pos = [-3,3,0.5], size = [0.5], mass=1)
+		pyrosim.Send_Sphere(name="Ball", pos = [3,-3,0.5], size = [0.5], mass=1)
 		pyrosim.End()
 		while not os.path.exists("world.sdf"):
 			time.sleep(0.01)
