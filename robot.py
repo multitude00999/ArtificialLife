@@ -9,11 +9,12 @@ import os
 
 
 class ROBOT():
-	def __init__(self, solutionID):
+	def __init__(self, solutionID, objects):
 		self.sensors = {}
 		self.motors = {}
 		self.solutionID = solutionID
 		self.robotId = p.loadURDF("body.urdf")
+		self.objects = objects
 		self.nn = NEURAL_NETWORK("brain" + str(self.solutionID) + ".nndf")
 		pyrosim.Prepare_To_Simulate(self.robotId)
 		self.Prepare_To_Sense()
@@ -49,13 +50,24 @@ class ROBOT():
 				# print()
 
 	def Get_Fitness(self):
-		stateOfLinkZero = p.getLinkState(self.robotId, 0)
-		positionOfLinkZero = stateOfLinkZero[0]
-		xCoordinateOfLinkZero = positionOfLinkZero[0]
+		# stateOfLinkZero = p.getLinkState(self.robotId, 0)
+		basePositionAndOrientation = p.getBasePositionAndOrientation(self.robotId)
+		basePosition = basePositionAndOrientation[0]
+		xPositionRobot = basePosition[0]
+		yPositionRobot = basePosition[1]
+		zPositionRobot = basePosition[2]
+		# print(xPosition, yPosition)
+		posAndOrientation = p.getBasePositionAndOrientation(self.objects[0])
+		position = posAndOrientation[0]
+		xPositionTarget = position[0]
+		yPositionTarget = position[1]
+		dist = (xPositionTarget-xPositionRobot)**2 + (yPositionTarget-yPositionRobot)**2
+		# positionOfLinkZero = stateOfLinkZero[0]
+		# xCoordinateOfLinkZero = positionOfLinkZero[0]
 		# print("x cord of link 0",xCoordinateOfLinkZero)
 		fitnessFile = "tmp" + str(self.solutionID) + ".txt"
 		with open(fitnessFile , 'w') as f:
-			f.write(str(xCoordinateOfLinkZero))
+			f.write(str(dist))
 		os.system("mv " + fitnessFile + " " + "fitness" + str(self.solutionID) + ".txt")
 		# exit()
 

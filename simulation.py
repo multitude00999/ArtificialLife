@@ -18,7 +18,7 @@ class SIMULATION:
 		p.setGravity(0, 0, -9.8)
 
 		self.world = WORLD(self.physicsClient)
-		self.robot = ROBOT(self.solutionID)
+		self.robot = ROBOT(self.solutionID, self.world.objects)
 
 	def Run(self):
 
