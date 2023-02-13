@@ -8,13 +8,18 @@ import constants as c
 
 class SOLUTION_AUTO():
 	def __init__(self, myID, numLinks):
-		self.numSensorNeurons, self.numMotorNeurons = numLinks, numLinks-1
-		self.weights = np.random.rand(self.numSensorNeurons, self.numSensorNeurons)
+		self.numLinks = numLinks
+		self.keepSensor = np.random.choice([0,1], size=self.numLinks)
+		print(self.keepSensor)
+		self.numSensorNeurons = np.sum(self.keepSensor)
+		self.numMotorNeurons = self.numLinks-1
+		self.weights = np.random.rand(self.numSensorNeurons, self.numMotorNeurons)
 		self.weights = self.weights*2 - 1
 		self.myID = myID
-		self.numLinks = numLinks
-		self.maxCubeDim = 2
-		self.minCubeDim = 0
+		self.maxCubeXDim = 0.5
+		self.maxCubeYDim = 0.5
+		self.maxCubeZDim = 1
+		self.minCubeDim = 0.1
 
 	def Set_ID(self, myID):
 		self.myID = myID
@@ -50,7 +55,6 @@ class SOLUTION_AUTO():
 			self.fitness = float(f.readlines()[0])
 
 		os.system("rm " + fitnessFile)
-		# print("fitness for", self.myID,  self.fitness)
 		
 
 	def Create_World(self):
@@ -64,30 +68,31 @@ class SOLUTION_AUTO():
 	def Generate_Body(self):
 		pyrosim.Start_URDF("body.urdf")
 
+		size_x = max(random.random()*self.maxCubeXDim, self.minCubeDim)
+		size_y = max(random.random()*self.maxCubeYDim, self.minCubeDim)
+		root_size_z = max(random.random()*self.maxCubeZDim, self.minCubeDim)
+		if self.keepSensor[0] == 1:
+			pyrosim.Send_Cube(name="0", pos = [0, 0, root_size_z/2]  , size=[size_x, size_y, root_size_z], mass = size_x*size_y*root_size_z, color = "Green", rgba = "0 1.0 0 1.0")
+		else:
+			pyrosim.Send_Cube(name="0", pos = [0, 0, root_size_z/2]  , size=[size_x, size_y, root_size_z], mass = size_x*size_y*root_size_z, color = "Blue", rgba = "0 0 1.0 1.0")
+		pyrosim.Send_Joint( name = "0" + "_" + "1", parent= "0" , child = "1" , type = "revolute", position = [-size_x/2, 0, root_size_z/2], jointAxis = "0 1 0")
 
 		
-		size_x, size_y, size_z = 1,1,1
-		pos_x, pos_y, pos_z = 0, 0, size_z/2
-		pyrosim.Send_Cube(name="0", pos = [pos_x, pos_y, pos_z]  , size=[size_x, size_y, size_z], mass = 1 )
-		
+
 		# left of origin
 		for i in range(1,self.numLinks):
-			if i == 1:
-				pyrosim.Send_Joint( name = str(i-1) + "_" + str(i), parent= str(i-1) , child = str(i) , type = "revolute", position = [-size_x/2, pos_y, pos_z], jointAxis = "0 1 0")
-				pos_y, pos_z = 0, 0
-			else:
-				pyrosim.Send_Joint( name = str(i-1) + "_" + str(i), parent= str(i-1) , child = str(i) , type = "revolute", position = [-size_x, pos_y, pos_z], jointAxis = "0 1 0")
-
+			size_x = max(random.random()*self.maxCubeXDim, self.minCubeDim)
+			size_y = max(random.random()*self.maxCubeYDim, self.minCubeDim)
+			size_z = min(random.random()*self.maxCubeZDim, root_size_z)
 			
-			size_x = max(random.random()*self.maxCubeDim, self.minCubeDim)
-			size_y = max(random.random()*self.maxCubeDim, self.minCubeDim)
-			size_z = max(random.random()*self.maxCubeDim, self.minCubeDim)
+			if self.keepSensor[i]==1:
+				pyrosim.Send_Cube(name=str(i), pos = [-size_x/2, 0, 0]  , size=[size_x, size_y, size_z], mass = size_x*size_y*size_z, color = "Green", rgba = "0 1.0 0 1.0")
+			else:
+				pyrosim.Send_Cube(name=str(i), pos = [-size_x/2, 0, 0]  , size=[size_x, size_y, size_z], mass = size_x*size_y*size_z, color = "Blue", rgba = "0 0 1.0 1.0")
 
-			print(size_x, size_y, size_z)
 
-
-			# subracted 0.5 from each cube z position so that there are no intial collisions with plane
-			pyrosim.Send_Cube(name=str(i), pos = [-size_x/2, pos_y, pos_z+size_z/2 - 0.5]  , size=[size_x, size_y, size_z], mass = 1 )
+			if i != self.numLinks-1:
+				pyrosim.Send_Joint( name = str(i) + "_" + str(i+1), parent= str(i) , child = str(i+1) , type = "revolute", position = [-size_x, 0, 0], jointAxis = "0 1 0")
 
 
 		pyrosim.End()
@@ -98,11 +103,15 @@ class SOLUTION_AUTO():
 	def Generate_Brain(self):
 		pyrosim.Start_NeuralNetwork("brain" + str(self.myID) + ".nndf")
 
-		for i in range(self.numLinks):
-			pyrosim.Send_Sensor_Neuron(name = i , linkName = str(i))
 
-		for i in range(self.numLinks-1):
-			pyrosim.Send_Motor_Neuron( name = i + self.numLinks , jointName = str(i) + "_" + str(i+1))
+		cnt = 0
+		for i in range(len(self.keepSensor)):
+			if self.keepSensor[i] == 1:
+				pyrosim.Send_Sensor_Neuron(name = cnt , linkName = str(i))
+				cnt+=1
+
+		for i in range(self.numMotorNeurons):
+			pyrosim.Send_Motor_Neuron( name = i + self.numSensorNeurons, jointName = str(i) + "_" + str(i+1))
 
 		for currentRow in range(self.numSensorNeurons):
 			for currentCol in range(self.numMotorNeurons):
