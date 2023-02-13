@@ -10,16 +10,15 @@ class SOLUTION_AUTO():
 	def __init__(self, myID, numLinks):
 		self.numLinks = numLinks
 		self.keepSensor = np.random.choice([0,1], size=self.numLinks)
-		print(self.keepSensor)
 		self.numSensorNeurons = np.sum(self.keepSensor)
 		self.numMotorNeurons = self.numLinks-1
 		self.weights = np.random.rand(self.numSensorNeurons, self.numMotorNeurons)
 		self.weights = self.weights*2 - 1
 		self.myID = myID
-		self.maxCubeXDim = 0.5
-		self.maxCubeYDim = 0.5
+		self.maxCubeXDim = 1
+		self.maxCubeYDim = 1
 		self.maxCubeZDim = 1
-		self.minCubeDim = 0.1
+		self.minCubeDim = 0.3
 
 	def Set_ID(self, myID):
 		self.myID = myID
@@ -70,12 +69,12 @@ class SOLUTION_AUTO():
 
 		size_x = max(random.random()*self.maxCubeXDim, self.minCubeDim)
 		size_y = max(random.random()*self.maxCubeYDim, self.minCubeDim)
-		root_size_z = max(random.random()*self.maxCubeZDim, self.minCubeDim)
+		size_z = max(random.random()*self.maxCubeZDim, self.minCubeDim)
 		if self.keepSensor[0] == 1:
-			pyrosim.Send_Cube(name="0", pos = [0, 0, root_size_z/2]  , size=[size_x, size_y, root_size_z], mass = size_x*size_y*root_size_z, color = "Green", rgba = "0 1.0 0 1.0")
+			pyrosim.Send_Cube(name="0", pos = [0, 0, self.maxCubeZDim/2]  , size=[size_x, size_y, size_z], mass = 1, color = "Green", rgba = "0 1.0 0 1.0")
 		else:
-			pyrosim.Send_Cube(name="0", pos = [0, 0, root_size_z/2]  , size=[size_x, size_y, root_size_z], mass = size_x*size_y*root_size_z, color = "Blue", rgba = "0 0 1.0 1.0")
-		pyrosim.Send_Joint( name = "0" + "_" + "1", parent= "0" , child = "1" , type = "revolute", position = [-size_x/2, 0, root_size_z/2], jointAxis = "0 1 0")
+			pyrosim.Send_Cube(name="0", pos = [0, 0, self.maxCubeZDim/2]  , size=[size_x, size_y, size_z], mass = 1, color = "Blue", rgba = "0 0 1.0 1.0")
+		pyrosim.Send_Joint( name = "0" + "_" + "1", parent= "0" , child = "1" , type = "revolute", position = [-size_x/2, 0, self.maxCubeZDim/2], jointAxis = "0 1 0")
 
 		
 
@@ -83,12 +82,13 @@ class SOLUTION_AUTO():
 		for i in range(1,self.numLinks):
 			size_x = max(random.random()*self.maxCubeXDim, self.minCubeDim)
 			size_y = max(random.random()*self.maxCubeYDim, self.minCubeDim)
-			size_z = min(random.random()*self.maxCubeZDim, root_size_z)
+			size_z = max(random.random()*self.maxCubeZDim, self.minCubeDim)
 			
 			if self.keepSensor[i]==1:
-				pyrosim.Send_Cube(name=str(i), pos = [-size_x/2, 0, 0]  , size=[size_x, size_y, size_z], mass = size_x*size_y*size_z, color = "Green", rgba = "0 1.0 0 1.0")
+				pyrosim.Send_Cube(name=str(i), pos = [-size_x/2, 0, 0]  , size=[size_x, size_y, size_z], mass = 1, color = "Green", rgba = "0 1.0 0 1.0")
+
 			else:
-				pyrosim.Send_Cube(name=str(i), pos = [-size_x/2, 0, 0]  , size=[size_x, size_y, size_z], mass = size_x*size_y*size_z, color = "Blue", rgba = "0 0 1.0 1.0")
+				pyrosim.Send_Cube(name=str(i), pos = [-size_x/2, 0, 0]  , size=[size_x, size_y, size_z], mass = 1, color = "Blue", rgba = "0 0 1.0 1.0")
 
 
 			if i != self.numLinks-1:

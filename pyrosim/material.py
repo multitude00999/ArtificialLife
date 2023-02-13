@@ -5,7 +5,6 @@ class MATERIAL:
     def __init__(self, color="Cyan", rgba="0 1.0 1.0 1.0"):
 
         self.depth  = 3
-        print(color,rgba)
 
         self.string1 = '<material name=' + '"' + color + '"' + '>'
 
