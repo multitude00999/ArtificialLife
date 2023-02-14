@@ -19,7 +19,7 @@ Now run ```python3 generate_random_1d_morphologies.py``` . It'll generate a rand
 
 # Task
 
-Task here is to random 1D morphologies. The links are randomly assigned a sensor. Green links have sensor while blue links don't have sensor.
+Task here is to generate random 1D morphologies. The links are randomly assigned a sensor. Green links have sensor while blue links don't have sensor.
 
 # world 
 
