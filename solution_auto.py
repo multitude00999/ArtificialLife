@@ -18,7 +18,7 @@ class SOLUTION_AUTO():
 		self.maxCubeXDim = 1
 		self.maxCubeYDim = 1
 		self.maxCubeZDim = 1
-		self.minCubeDim = 0.3
+		self.minCubeDim = 0.5
 
 	def Set_ID(self, myID):
 		self.myID = myID
@@ -71,9 +71,9 @@ class SOLUTION_AUTO():
 		size_y = max(random.random()*self.maxCubeYDim, self.minCubeDim)
 		size_z = max(random.random()*self.maxCubeZDim, self.minCubeDim)
 		if self.keepSensor[0] == 1:
-			pyrosim.Send_Cube(name="0", pos = [0, 0, self.maxCubeZDim/2]  , size=[size_x, size_y, size_z], mass = 1, color = "Green", rgba = "0 1.0 0 1.0")
+			pyrosim.Send_Cube(name="0", pos = [0, 0, self.maxCubeZDim/2]  , size=[size_x, size_y, size_z], mass = size_x*size_y*size_z, color = "Green", rgba = "0 1.0 0 1.0")
 		else:
-			pyrosim.Send_Cube(name="0", pos = [0, 0, self.maxCubeZDim/2]  , size=[size_x, size_y, size_z], mass = 1, color = "Blue", rgba = "0 0 1.0 1.0")
+			pyrosim.Send_Cube(name="0", pos = [0, 0, self.maxCubeZDim/2]  , size=[size_x, size_y, size_z], mass = size_x*size_y*size_z, color = "Blue", rgba = "0 0 1.0 1.0")
 		pyrosim.Send_Joint( name = "0" + "_" + "1", parent= "0" , child = "1" , type = "revolute", position = [-size_x/2, 0, self.maxCubeZDim/2], jointAxis = "0 1 0")
 
 		
@@ -85,10 +85,10 @@ class SOLUTION_AUTO():
 			size_z = max(random.random()*self.maxCubeZDim, self.minCubeDim)
 			
 			if self.keepSensor[i]==1:
-				pyrosim.Send_Cube(name=str(i), pos = [-size_x/2, 0, 0]  , size=[size_x, size_y, size_z], mass = 1, color = "Green", rgba = "0 1.0 0 1.0")
+				pyrosim.Send_Cube(name=str(i), pos = [-size_x/2, 0, 0]  , size=[size_x, size_y, size_z], mass = size_x*size_y*size_z, color = "Green", rgba = "0 1.0 0 1.0")
 
 			else:
-				pyrosim.Send_Cube(name=str(i), pos = [-size_x/2, 0, 0]  , size=[size_x, size_y, size_z], mass = 1, color = "Blue", rgba = "0 0 1.0 1.0")
+				pyrosim.Send_Cube(name=str(i), pos = [-size_x/2, 0, 0]  , size=[size_x, size_y, size_z], mass = size_x*size_y*size_z, color = "Blue", rgba = "0 0 1.0 1.0")
 
 
 			if i != self.numLinks-1:
