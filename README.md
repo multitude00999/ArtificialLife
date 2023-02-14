@@ -8,8 +8,6 @@ Following is a submission for assignment 6 of Artificial life [course](https://w
 
 Youtube video [link](https://www.youtube.com/shorts/amqdrVkNZ_M)
 
-[![IMAGE ALT TEXT HERE](http://img.youtube.com/vi/YamqdrVkNZ_M/0.jpg)](http://www.youtube.com/watch?v=amqdrVkNZ_M)
-
 
 # Installation
 
