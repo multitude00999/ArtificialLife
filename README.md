@@ -2,7 +2,7 @@
 
 Following is a submission for assignment 6 of Artificial life [course](https://www.mccormick.northwestern.edu/mechanical/academics/courses/descriptions/495-artificial-life.html). 
 
-
+![flow](./random_3d_morphology.png)
 
 # Demo
 
