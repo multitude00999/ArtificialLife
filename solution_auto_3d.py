@@ -28,6 +28,8 @@ class SOLUTION_AUTO_3D():
 			self.maxCubeYDim = 1
 			self.maxCubeZDim = 1
 			self.minCubeDim = 0.5
+			self.addSensorProb = 0.6
+			self.removeSensorProb = 0.4
 
 		
 
@@ -264,6 +266,11 @@ class SOLUTION_AUTO_3D():
 				time.sleep(0.01)
 
 		else:
+			for i in range(len(self.keepSensor)):
+				if self.keepSensor[i]:
+					self.links[i].setColor("Green", "0 1.0 0 1.0")
+				else:
+					self.links[i].setColor("Blue", "0 0 1.0 1.0")
 			for i in range(self.numLinks):
 				curr = self.links[i]
 				pyrosim.Send_Cube(name=curr.linkName, pos = curr.relPos  , size=curr.dim, mass = curr.mass, color = curr.color, rgba = curr.rgba)
@@ -299,7 +306,53 @@ class SOLUTION_AUTO_3D():
 			time.sleep(0.01)
 
 
+	def addSensorRandom(self):
+		noSensorInd = []
+		for i in range(len(self.keepSensor)):
+			if self.keepSensor[i] == 0:
+				noSensorInd.append(i)
+		if len(noSensorInd) == 0:
+			return False
+		randInd = random.choices(noSensorInd)[0]
+		# print(randInd)
+		self.keepSensor[randInd] = 1
+		
+		newWeights = np.random.rand(self.numSensorNeurons + 1, self.numMotorNeurons)
+		newWeights[:self.numSensorNeurons, :] = self.weights
+		newWeights[self.numSensorNeurons:] = np.random.rand(1, self.numMotorNeurons)
+		self.weights = newWeights
+		self.numSensorNeurons += 1
+		return True
+		
+	def removeSensorRandom(self):
+		hasSensorInd = []
+		for i in range(len(self.keepSensor)):
+			if self.keepSensor[i] == 1:
+				hasSensorInd.append(i)
+
+		if len(hasSensorInd) < 2 : # do not remove sensor if there are less than 2 sensors
+			return False
+		randInd = random.choices(hasSensorInd)[0]
+		# print(randInd)
+		self.keepSensor[randInd] = 0
+		
+		newWeights = np.random.rand(self.numSensorNeurons - 1, self.numMotorNeurons)
+		newWeights = self.weights[:self.numSensorNeurons-1, :]
+		self.weights = newWeights
+		self.numSensorNeurons -= 1
+		return True
+
 	def Mutate(self):
+
+		# change body
+		if random.random() < self.addSensorProb:
+			self.addSensorRandom()
+
+		if random.random() < self.removeSensorProb:
+			self.removeSensorRandom()
+
+		# 
+
 		randomRow = random.randint(0,self.weights.shape[0]-1)
 		randomCol = random.randint(0,self.weights.shape[1]-1)
 		self.weights[randomRow][randomCol] = random.random()*2 - 1
