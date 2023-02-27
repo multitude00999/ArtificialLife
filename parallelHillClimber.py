@@ -100,7 +100,7 @@ class PARALLEL_HILL_CLIMBER():
 			print("\nparent fitness:", self.parents[parent].fitness, "child fitness:", self.children[parent].fitness )
 
 	def __del__(self):
-		with open('bestCreatureFitnessVals_' + str(self.randomSeed) + '.pkl' , 'wb') as f:
+		with open('./bestFitnessVals/bestCreatureFitnessVals_' + str(self.randomSeed) + '.pkl' , 'wb') as f:
 			pickle.dump(self.best_creature_fitness, f)
 		for file in os.listdir("."):
 			if file.startswith("brain") or file.startswith("fitness") or file == "1" or file.startswith("body"):
