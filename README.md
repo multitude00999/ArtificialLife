@@ -40,7 +40,7 @@ Brain contains random number of sensor nueorons and ranodm number of motor neuro
 
 ## flow diagram of brain for 3 sensor nueuron and 2 motor neuron
 
-![flow](./brain3D.png)
+![flow](./SensorMotorNeuronConnection.png)
 
 # References
 

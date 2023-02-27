@@ -1,4 +1,4 @@
-from solution import SOLUTION
+from solution_auto_3d import SOLUTION_AUTO_3D
 import constants as c
 import copy
 import time
@@ -6,20 +6,20 @@ import os
 class PARALLEL_HILL_CLIMBER():
 	def __init__(self, show_random):
 		for file in os.listdir("."):
-			if file.startswith("brain") or file.startswith("fitness"):
+			if file.startswith("brain") or file.startswith("fitness") or file.startswith("body"):
 				os.system("rm {}".format(file))
 
 		self.parents = {}
 		self.nextAvailableID = 0
 		for i in range(c.populationSize):
-			self.parents[i] = SOLUTION(self.nextAvailableID)
+			self.parents[i] = SOLUTION_AUTO_3D(self.nextAvailableID, fromScratch = True)
 			self.nextAvailableID+=1
 
 		if show_random:
 			self.show_random()
 
 	def Evolve(self):
-		self.Evaluate(self.parents)
+		self.Evaluate(self.parents, fromScratch = True)
 		for currentGeneration in range(c.numberOfGenerations):
 			print("====== generation ", currentGeneration , " ================ ")
 			self.Evolve_For_One_Generation()
@@ -27,7 +27,7 @@ class PARALLEL_HILL_CLIMBER():
 	def Evolve_For_One_Generation(self):
 		self.Spawn()
 		self.Mutate()
-		self.Evaluate(self.children)
+		self.Evaluate(self.children, fromScratch = False)
 		self.Print()
 		self.Select()
 		
@@ -44,9 +44,9 @@ class PARALLEL_HILL_CLIMBER():
 		for child in self.children:
 			self.children[child].Mutate()
 
-	def Evaluate(self, solutions):
+	def Evaluate(self, solutions, fromScratch):
 		for i in range(c.populationSize):
-			solutions[i].Start_Simulation("DIRECT", "1")
+			solutions[i].Start_Simulation("DIRECT", "1", "1", fromScratch)
 
 
 		for i in range(c.populationSize):
@@ -68,11 +68,11 @@ class PARALLEL_HILL_CLIMBER():
 
 		print("best parent:", best_parent, "fitness:", best_fitness)
 
-		self.parents[best_parent].Start_Simulation("GUI", "0")
+		self.parents[best_parent].Start_Simulation("GUI", "1", "1", fromScratch = False)
 		self.parents[best_parent].Wait_For_Simulation_To_End() # temporary fix to remove final fitness file
 
 	def show_random(self):
-		self.parents[0].Start_Simulation("GUI", "1")
+		self.parents[0].Start_Simulation("GUI", "1", "1", fromScratch = True)
 		self.parents[0].Wait_For_Simulation_To_End()
 		
 
@@ -82,7 +82,7 @@ class PARALLEL_HILL_CLIMBER():
 
 	def __del__(self):
 		for file in os.listdir("."):
-			if file.startswith("brain") or file.startswith("fitness") or file == "1":
+			if file.startswith("brain") or file.startswith("fitness") or file == "1" or file.startswith("body"):
 				os.system("rm {}".format(file))
 	# 	# os.system("rm fitness*.txt")
 	# 	# os.system("rm brain*.nndf")

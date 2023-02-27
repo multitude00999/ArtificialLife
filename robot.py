@@ -9,11 +9,11 @@ import os
 
 
 class ROBOT():
-	def __init__(self, solutionID, objects, deleteBrain):
+	def __init__(self, solutionID, objects, deleteBrain, deleteBody):
 		self.sensors = {}
 		self.motors = {}
 		self.solutionID = solutionID
-		self.robotId = p.loadURDF("body.urdf")
+		self.robotId = p.loadURDF("body" + str(self.solutionID) + ".urdf")
 		self.objects = objects
 		self.nn = NEURAL_NETWORK("brain" + str(self.solutionID) + ".nndf")
 		pyrosim.Prepare_To_Simulate(self.robotId)
@@ -23,6 +23,15 @@ class ROBOT():
 			os.system("rm " + "brain" + str(self.solutionID) + ".nndf")
 		else:
 			os.system("mv " + "brain" + str(self.solutionID) + ".nndf" + " brainBest.nndf")
+
+		if deleteBody == "1":
+			os.system("rm " + "body" + str(self.solutionID) + ".urdf")
+
+		else:
+			os.system("mv " + "body" + str(self.solutionID) + ".nndf" + " bodyBest.nndf")
+
+	def Prepare(self):
+		pyrosim.Prepare_To_Simulate(self.robotId)
 
 	def Prepare_To_Sense(self):
 		for linkName in pyrosim.linkNamesToIndices:
@@ -54,6 +63,8 @@ class ROBOT():
 
 	def Get_Fitness(self):
 		# stateOfLinkZero = p.getLinkState(self.robotId, 0)
+		# positionOfLinkZero = stateOfLinkZero[0]
+		# xCoordinateOfLinkZero = positionOfLinkZero[0]
 		basePositionAndOrientation = p.getBasePositionAndOrientation(self.robotId)
 		basePosition = basePositionAndOrientation[0]
 		xPositionRobot = basePosition[0]
@@ -64,10 +75,14 @@ class ROBOT():
 		position = posAndOrientation[0]
 		xPositionTarget = position[0]
 		yPositionTarget = position[1]
-		dist = np.sqrt((xPositionTarget-xPositionRobot)**2 + (yPositionTarget-yPositionRobot)**2)
-		# positionOfLinkZero = stateOfLinkZero[0]
-		# xCoordinateOfLinkZero = positionOfLinkZero[0]
+		zPositionTarget = position[2]
+		# print("ball", xPositionTarget, yPositionTarget, zPositionTarget)
+		# print("bot", xPositionRobot, yPositionRobot, zPositionRobot)
+		dist = np.sqrt((xPositionTarget-xPositionRobot)**2 + (yPositionTarget-yPositionRobot)**2 + (zPositionTarget-zPositionRobot)**2)
+		# dist = xCoordinateOfLinkZero
+		
 		# print("x cord of link 0",xCoordinateOfLinkZero)
+		# print(dist)
 		fitnessFile = "tmp" + str(self.solutionID) + ".txt"
 		with open(fitnessFile , 'w') as f:
 			f.write(str(dist))
