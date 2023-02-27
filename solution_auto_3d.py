@@ -13,7 +13,7 @@ class SOLUTION_AUTO_3D():
 
 		if fromScratch:
 			self.numLinks = random.randint(3,5)
-			self.sensor_prob = 70
+			self.sensor_prob = 50
 			self.keepSensor = random.choices([0,1], weights = [100 - self.sensor_prob, self.sensor_prob], k=self.numLinks)
 			self.numSensorNeurons = np.sum(self.keepSensor)
 			if self.numSensorNeurons == 0:
@@ -27,9 +27,15 @@ class SOLUTION_AUTO_3D():
 			self.maxCubeXDim = 1
 			self.maxCubeYDim = 1
 			self.maxCubeZDim = 1
-			self.minCubeDim = 0.5
-			self.addSensorProb = 0.6
-			self.removeSensorProb = 0.4
+			self.minCubeDim = 0.3
+			self.addSensorProb = 0.5
+			self.removeSensorProb = 0.5
+			self.mutateBodyProb = 0.8
+			self.mutateBrainProb = 1 - self.mutateBodyProb 
+
+		else:
+			self.mutateBodyProb = 0.9*self.mutateBodyProb
+			self.mutateBrainProb = 1 - self.mutateBodyProb 
 
 		
 
@@ -72,7 +78,7 @@ class SOLUTION_AUTO_3D():
 	def Create_World(self):
 		pyrosim.Start_SDF("world.sdf")
 		# pyrosim.Send_Cube(name="Box", pos = [-5, 5, 2.5]  , size=[1, 1, 1], mass=10000)
-		pyrosim.Send_Sphere(name="Ball", pos = [3,-3,0.5], size = [0.5], mass=1)
+		pyrosim.Send_Sphere(name="Ball", pos = [-5,-5,0.5], size = [0.5], mass=1)
 		pyrosim.End()
 		while not os.path.exists("world.sdf"):
 			time.sleep(0.01)
@@ -345,15 +351,19 @@ class SOLUTION_AUTO_3D():
 	def Mutate(self):
 
 		# change body
-		if random.random() < self.addSensorProb:
-			self.addSensorRandom()
+		if random.random() < self.mutateBodyProb:
+			# randomly add sensor to a link without sensor
+			if random.random() < self.addSensorProb:
+				self.addSensorRandom()
 
-		if random.random() < self.removeSensorProb:
-			self.removeSensorRandom()
+			# randomly remove sensor from a link with sensor
+			if random.random() < self.removeSensorProb:
+				self.removeSensorRandom()
 
-		# 
 
-		randomRow = random.randint(0,self.weights.shape[0]-1)
-		randomCol = random.randint(0,self.weights.shape[1]-1)
-		self.weights[randomRow][randomCol] = random.random()*2 - 1
+		# change brain
+		if random.random() < self.mutateBrainProb:
+			randomRow = random.randint(0,self.weights.shape[0]-1)
+			randomCol = random.randint(0,self.weights.shape[1]-1)
+			self.weights[randomRow][randomCol] = random.random()*2 - 1
 
