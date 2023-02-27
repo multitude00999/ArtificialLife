@@ -24,7 +24,6 @@ class SIMULATION:
 		self.robot = ROBOT(self.solutionID, self.world.objects, self.deleteBrain, self.deleteBody)
 
 	def Run(self):
-
 		for t in range(c.numSteps):
 			p.stepSimulation()
 			self.robot.Prepare()

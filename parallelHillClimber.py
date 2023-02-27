@@ -3,6 +3,8 @@ import constants as c
 import copy
 import time
 import os
+import pickle
+
 class PARALLEL_HILL_CLIMBER():
 	def __init__(self, show_random):
 		for file in os.listdir("."):
@@ -11,6 +13,7 @@ class PARALLEL_HILL_CLIMBER():
 
 		self.parents = {}
 		self.nextAvailableID = 0
+		self.best_creature_fitness = []
 		for i in range(c.populationSize):
 			self.parents[i] = SOLUTION_AUTO_3D(self.nextAvailableID, fromScratch = True)
 			self.nextAvailableID+=1
@@ -20,9 +23,11 @@ class PARALLEL_HILL_CLIMBER():
 
 	def Evolve(self):
 		self.Evaluate(self.parents, fromScratch = True)
+		self.get_best_creature_fitness()
 		for currentGeneration in range(c.numberOfGenerations):
 			print("====== generation ", currentGeneration , " ================ ")
 			self.Evolve_For_One_Generation()
+			self.get_best_creature_fitness()
 
 	def Evolve_For_One_Generation(self):
 		self.Spawn()
@@ -71,6 +76,16 @@ class PARALLEL_HILL_CLIMBER():
 		self.parents[best_parent].Start_Simulation("GUI", "1", "1", fromScratch = False)
 		self.parents[best_parent].Wait_For_Simulation_To_End() # temporary fix to remove final fitness file
 
+	def get_best_creature_fitness(self):
+		best_parent = 0
+		best_fitness = float('inf')
+		for parent in self.parents:
+			if best_fitness > self.parents[parent].fitness:
+				best_parent = parent
+				best_fitness = self.parents[parent].fitness
+
+		self.best_creature_fitness.append(best_fitness)
+
 	def show_random(self):
 		self.parents[0].Start_Simulation("GUI", "1", "1", fromScratch = True)
 		self.parents[0].Wait_For_Simulation_To_End()
@@ -81,6 +96,8 @@ class PARALLEL_HILL_CLIMBER():
 			print("\nparent fitness:", self.parents[parent].fitness, "child fitness:", self.children[parent].fitness )
 
 	def __del__(self):
+		with open('best_creature_fitness_vals.pkl' , 'wb') as f:
+			pickle.dump(self.best_creature_fitness, f)
 		for file in os.listdir("."):
 			if file.startswith("brain") or file.startswith("fitness") or file == "1" or file.startswith("body"):
 				os.system("rm {}".format(file))
