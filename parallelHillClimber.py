@@ -4,18 +4,22 @@ import copy
 import time
 import os
 import pickle
+import random
 
 class PARALLEL_HILL_CLIMBER():
-	def __init__(self, show_random):
+	def __init__(self, show_random, randomSeed):
 		for file in os.listdir("."):
 			if file.startswith("brain") or file.startswith("fitness") or file.startswith("body"):
 				os.system("rm {}".format(file))
 
 		self.parents = {}
+		self.randomSeed = randomSeed
+		self.random = random.Random(self.randomSeed)
 		self.nextAvailableID = 0
 		self.best_creature_fitness = []
 		for i in range(c.populationSize):
-			self.parents[i] = SOLUTION_AUTO_3D(self.nextAvailableID, fromScratch = True)
+			randomSeed = self.random.randrange(1000000)
+			self.parents[i] = SOLUTION_AUTO_3D(self.nextAvailableID, fromScratch = True, randSeed = randomSeed)
 			self.nextAvailableID+=1
 
 		if show_random:
@@ -96,7 +100,7 @@ class PARALLEL_HILL_CLIMBER():
 			print("\nparent fitness:", self.parents[parent].fitness, "child fitness:", self.children[parent].fitness )
 
 	def __del__(self):
-		with open('best_creature_fitness_vals.pkl' , 'wb') as f:
+		with open('bestCreatureFitnessVals_' + str(self.randomSeed) + '.pkl' , 'wb') as f:
 			pickle.dump(self.best_creature_fitness, f)
 		for file in os.listdir("."):
 			if file.startswith("brain") or file.startswith("fitness") or file == "1" or file.startswith("body"):

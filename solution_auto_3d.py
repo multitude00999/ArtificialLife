@@ -9,18 +9,19 @@ from link import LINK
 from joint import CREATURE_JOINT
 
 class SOLUTION_AUTO_3D():
-	def __init__(self, myID, fromScratch):
-
+	def __init__(self, myID, fromScratch, randSeed):
+		self.random = random.Random(randSeed)
 		if fromScratch:
-			self.numLinks = random.randint(3,5)
+			self.numLinks = self.random.randint(3,5)
 			self.sensor_prob = 50
-			self.keepSensor = random.choices([0,1], weights = [100 - self.sensor_prob, self.sensor_prob], k=self.numLinks)
+			self.keepSensor = self.random.choices([0,1], weights = [100 - self.sensor_prob, self.sensor_prob], k=self.numLinks)
 			self.numSensorNeurons = np.sum(self.keepSensor)
 			if self.numSensorNeurons == 0:
-				randIdx = random.randint(0,len(self.keepSensor)-1)
+				randIdx = self.random.randint(0,len(self.keepSensor)-1)
 				self.keepSensor[randIdx] = 1
 				self.numSensorNeurons +=1
 			self.numMotorNeurons = self.numLinks-1
+			np.random.seed(randSeed)
 			self.weights = np.random.rand(self.numSensorNeurons, self.numMotorNeurons)
 			self.weights = self.weights*2 - 1
 			self.myID = myID
@@ -93,33 +94,33 @@ class SOLUTION_AUTO_3D():
 	def getJointPosOnFace(self, parentCubeIdx, face):
 		if face == "x_plus":
 			jointX = self.links[parentCubeIdx].relPos[0] + self.links[parentCubeIdx].dim[0]/2
-			jointY = self.links[parentCubeIdx].relPos[1] + (random.random()*2 -1) *self.links[parentCubeIdx].dim[1]/2
-			jointZ = self.links[parentCubeIdx].relPos[2] + (random.random()*2 -1) *self.links[parentCubeIdx].dim[2]/2
+			jointY = self.links[parentCubeIdx].relPos[1] + (self.random.random()*2 -1) *self.links[parentCubeIdx].dim[1]/2
+			jointZ = self.links[parentCubeIdx].relPos[2] + (self.random.random()*2 -1) *self.links[parentCubeIdx].dim[2]/2
 
 		elif face == "x_minus":
 			jointX = self.links[parentCubeIdx].relPos[0] - self.links[parentCubeIdx].dim[0]/2
-			jointY = self.links[parentCubeIdx].relPos[1] + (random.random()*2 -1) *self.links[parentCubeIdx].dim[1]/2
-			jointZ = self.links[parentCubeIdx].relPos[2] + (random.random()*2 -1) *self.links[parentCubeIdx].dim[2]/2
+			jointY = self.links[parentCubeIdx].relPos[1] + (self.random.random()*2 -1) *self.links[parentCubeIdx].dim[1]/2
+			jointZ = self.links[parentCubeIdx].relPos[2] + (self.random.random()*2 -1) *self.links[parentCubeIdx].dim[2]/2
 
 		elif face == "y_plus":
 			jointY = self.links[parentCubeIdx].relPos[1] + self.links[parentCubeIdx].dim[1]/2
-			jointX = self.links[parentCubeIdx].relPos[0] + (random.random()*2 -1) *self.links[parentCubeIdx].dim[0]/2
-			jointZ = self.links[parentCubeIdx].relPos[2] + (random.random()*2 -1) *self.links[parentCubeIdx].dim[2]/2
+			jointX = self.links[parentCubeIdx].relPos[0] + (self.random.random()*2 -1) *self.links[parentCubeIdx].dim[0]/2
+			jointZ = self.links[parentCubeIdx].relPos[2] + (self.random.random()*2 -1) *self.links[parentCubeIdx].dim[2]/2
 
 		elif face == "y_minus":
 			jointY = self.links[parentCubeIdx].relPos[1] - self.links[parentCubeIdx].dim[1]/2
-			jointX = self.links[parentCubeIdx].relPos[0] + (random.random()*2 -1) *self.links[parentCubeIdx].dim[0]/2
-			jointZ = self.links[parentCubeIdx].relPos[2] + (random.random()*2 -1) *self.links[parentCubeIdx].dim[2]/2
+			jointX = self.links[parentCubeIdx].relPos[0] + (self.random.random()*2 -1) *self.links[parentCubeIdx].dim[0]/2
+			jointZ = self.links[parentCubeIdx].relPos[2] + (self.random.random()*2 -1) *self.links[parentCubeIdx].dim[2]/2
 
 		elif face == "z_plus":
 			jointZ = self.links[parentCubeIdx].relPos[2] + self.links[parentCubeIdx].dim[2]/2
-			jointX = self.links[parentCubeIdx].relPos[0] + (random.random()*2 -1) *self.links[parentCubeIdx].dim[0]/2
-			jointY = self.links[parentCubeIdx].relPos[1] + (random.random()*2 -1) *self.links[parentCubeIdx].dim[1]/2
+			jointX = self.links[parentCubeIdx].relPos[0] + (self.random.random()*2 -1) *self.links[parentCubeIdx].dim[0]/2
+			jointY = self.links[parentCubeIdx].relPos[1] + (self.random.random()*2 -1) *self.links[parentCubeIdx].dim[1]/2
 
 		elif face == "z_minus":
 			jointZ = self.links[parentCubeIdx].relPos[2] - self.links[parentCubeIdx].dim[2]/2
-			jointX = self.links[parentCubeIdx].relPos[0] + (random.random()*2 -1) *self.links[parentCubeIdx].dim[0]/2
-			jointY = self.links[parentCubeIdx].relPos[1] + (random.random()*2 -1) *self.links[parentCubeIdx].dim[1]/2
+			jointX = self.links[parentCubeIdx].relPos[0] + (self.random.random()*2 -1) *self.links[parentCubeIdx].dim[0]/2
+			jointY = self.links[parentCubeIdx].relPos[1] + (self.random.random()*2 -1) *self.links[parentCubeIdx].dim[1]/2
 
 
 		return [jointX, jointY, jointZ]
@@ -173,12 +174,12 @@ class SOLUTION_AUTO_3D():
 
 				if i != 0:
 					# randomly choose face
-					parent_cube_idx = random.randint(0, len(self.links)-1)
-					rand_face = random.choice(["x_plus", "y_plus", "z_plus", "x_minus", "y_minus", "z_minus"])
+					parent_cube_idx = self.random.randint(0, len(self.links)-1)
+					rand_face = self.random.choice(["x_plus", "y_plus", "z_plus", "x_minus", "y_minus", "z_minus"])
 
 					# check if the face is occupied
 					while (rand_face in self.links[parent_cube_idx].occupied_face):
-						rand_face = random.choice(["x_plus", "y_plus", "z_plus", "x_minus", "y_minus", "z_minus"])
+						rand_face = self.random.choice(["x_plus", "y_plus", "z_plus", "x_minus", "y_minus", "z_minus"])
 					self.links[parent_cube_idx].occupied_face.append(rand_face)
 					# print("random face", rand_face)
 					# randomly choose parent cube from already generated cubes
@@ -206,9 +207,9 @@ class SOLUTION_AUTO_3D():
 					self.joints.append(joint)
 
 				if i == 0:
-					size_x = random.uniform(self.minCubeDim, self.maxCubeXDim)
-					size_y = random.uniform(self.minCubeDim, self.maxCubeYDim)
-					size_z = random.uniform(self.minCubeDim, self.maxCubeXDim)
+					size_x = self.random.uniform(self.minCubeDim, self.maxCubeXDim)
+					size_y = self.random.uniform(self.minCubeDim, self.maxCubeYDim)
+					size_z = self.random.uniform(self.minCubeDim, self.maxCubeXDim)
 					par = LINK(str(i), None, [size_x, size_y, size_z], [0,0,0])
 					par.globalPos = [0, 0, 0]
 					if self.keepSensor[i]:
@@ -216,9 +217,9 @@ class SOLUTION_AUTO_3D():
 					self.links.append(par)
 					# print(par.linkName, par.relPos , par.dim, par.mass, par.color, par.rgba)
 				else:
-					size_x = max(random.random()*self.maxCubeXDim, self.minCubeDim)
-					size_y = max(random.random()*self.maxCubeYDim, self.minCubeDim)
-					size_z = max(random.random()*self.maxCubeZDim, self.minCubeDim)
+					size_x = max(self.random.random()*self.maxCubeXDim, self.minCubeDim)
+					size_y = max(self.random.random()*self.maxCubeYDim, self.minCubeDim)
+					size_z = max(self.random.random()*self.maxCubeZDim, self.minCubeDim)
 					pos = self.getCubePosReljoint([size_x, size_y, size_z], rand_face)
 					par = LINK(str(i), self.links[parent_cube_idx], [size_x, size_y, size_z], pos)
 					# par.globalPosX = par.relPos[0] + self.joints[i-1].jointPos[0] + par.parent.globalPos[0] 
@@ -319,7 +320,7 @@ class SOLUTION_AUTO_3D():
 				noSensorInd.append(i)
 		if len(noSensorInd) == 0:
 			return False
-		randInd = random.choices(noSensorInd)[0]
+		randInd = self.random.choices(noSensorInd)[0]
 		# print(randInd)
 		self.keepSensor[randInd] = 1
 		
@@ -338,7 +339,7 @@ class SOLUTION_AUTO_3D():
 
 		if len(hasSensorInd) < 2 : # do not remove sensor if there are less than 2 sensors
 			return False
-		randInd = random.choices(hasSensorInd)[0]
+		randInd = self.random.choices(hasSensorInd)[0]
 		# print(randInd)
 		self.keepSensor[randInd] = 0
 		
@@ -351,19 +352,19 @@ class SOLUTION_AUTO_3D():
 	def Mutate(self):
 
 		# change body
-		if random.random() < self.mutateBodyProb:
+		if self.random.random() < self.mutateBodyProb:
 			# randomly add sensor to a link without sensor
-			if random.random() < self.addSensorProb:
+			if self.random.random() < self.addSensorProb:
 				self.addSensorRandom()
 
 			# randomly remove sensor from a link with sensor
-			if random.random() < self.removeSensorProb:
+			if self.random.random() < self.removeSensorProb:
 				self.removeSensorRandom()
 
 
 		# change brain
-		if random.random() < self.mutateBrainProb:
-			randomRow = random.randint(0,self.weights.shape[0]-1)
-			randomCol = random.randint(0,self.weights.shape[1]-1)
+		if self.random.random() < self.mutateBrainProb:
+			randomRow = self.random.randint(0,self.weights.shape[0]-1)
+			randomCol = self.random.randint(0,self.weights.shape[1]-1)
 			self.weights[randomRow][randomCol] = random.random()*2 - 1
 
