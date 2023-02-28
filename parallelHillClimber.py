@@ -17,6 +17,8 @@ class PARALLEL_HILL_CLIMBER():
 		self.random = random.Random(self.randomSeed)
 		self.nextAvailableID = 0
 		self.best_creature_fitness = []
+		self.bodyMutationRate = 1
+		self.brainMutationRate = 1 - self.bodyMutationRate
 		for i in range(c.populationSize):
 			randomSeed = self.random.randrange(1000000)
 			self.parents[i] = SOLUTION_AUTO_3D(self.nextAvailableID, fromScratch = True, randSeed = randomSeed)
@@ -31,6 +33,9 @@ class PARALLEL_HILL_CLIMBER():
 		for currentGeneration in range(c.numberOfGenerations):
 			print("====== generation ", currentGeneration , " ================ ")
 			self.Evolve_For_One_Generation()
+			self.bodyMutationRate = 0.9*self.bodyMutationRate
+			self.brainMutationRate = 1 - self.bodyMutationRate
+
 			self.get_best_creature_fitness()
 
 	def Evolve_For_One_Generation(self):
@@ -39,19 +44,22 @@ class PARALLEL_HILL_CLIMBER():
 		self.Evaluate(self.children, fromScratch = False)
 		self.Print()
 		self.Select()
-		
+		# self.show_random_child()
 
 	def Spawn(self):
 		self.children = {}
 		for parent in self.parents:
 			self.children[parent] = copy.deepcopy(self.parents[parent])
+			self.children[parent].fromScratch = False
+			# self.children[parent].__init__(self.nextAvailableID, fromScratch = False, randSeed = self.random.randrange(1000000))
+			self.children[parent].random = random.Random(self.random.randrange(1000000))
 			self.children[parent].Set_ID(self.nextAvailableID)
 			self.nextAvailableID+=1
 
 	def Mutate(self):
 		
 		for child in self.children:
-			self.children[child].Mutate()
+			self.children[child].Mutate(self.bodyMutationRate, self.brainMutationRate)
 
 	def Evaluate(self, solutions, fromScratch):
 		for i in range(c.populationSize):
@@ -93,6 +101,10 @@ class PARALLEL_HILL_CLIMBER():
 	def show_random(self):
 		self.parents[0].Start_Simulation("GUI", "1", "1", fromScratch = True)
 		self.parents[0].Wait_For_Simulation_To_End()
+
+	def show_random_child(self):
+		self.children[0].Start_Simulation("GUI", "1", "1", fromScratch = False)
+		self.children[0].Wait_For_Simulation_To_End()
 		
 
 	def Print(self):

@@ -36,13 +36,19 @@ def read_data(filename):
 	with open(filename, 'rb') as f:
 		bestCreatureValues = pickle.load(f)
 
+	for i in range(len(bestCreatureValues)):
+		bestCreatureValues[i] *= -1
+
 	return bestCreatureValues
 filelist = os.listdir('./bestFitnessVals')
 
 i = 0
 for file in filelist:
 	bestCreatureValues = read_data('./bestFitnessVals/' + file)
-	plt.plot(bestCreatureValues, label = "best creature fitness " + str(i), linewidth = 3)
+	plt.plot(bestCreatureValues, label = "seed " + str(file.split('_')[1].split('.')[0]), linewidth = 3)
 	i+=1 
+plt.xlabel('generation')
+plt.ylabel('fitness')
+plt.title('fitness = euclidean distance of root link from origin (larger is better)')
 plt.legend()
 plt.show()

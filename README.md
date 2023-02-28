@@ -1,11 +1,30 @@
-# Random 3D creature morphologies
+# Evolving 3D creature
 
 Following is a submission for assignment 7 of Artificial life [course](https://www.mccormick.northwestern.edu/mechanical/academics/courses/descriptions/495-artificial-life.html). 
 
 
-# flow diagram of 3D morphologies created
+# flow diagram of how 3D morphologies are created
 ![flow](./random_3d_morphology.png)
 
+# Flow diagram of how body is mutated
+[!diagram2](./mutateBody.png)
+
+# Flow diagram of how brain is mutated
+[!diagram3](./mutateBrain.png)
+
+# Task
+
+## Task 1
+Task here is to evovle a 3D creature that can go towards a target location (ball in this task).
+
+### Fitness curve task 1
+[!diagram4](./chase_the_ball_fitness_curves.png)
+
+### Fitness curve task 2
+[!diagram5](./Fitness_Move_Fast.png)
+
+## Task 2
+Task here is to reach as far as possible from the origin (i.e running fast) 
 
 # Demo
 
@@ -19,12 +38,10 @@ Follow instruction given [here](https://www.reddit.com/r/ludobots/wiki/installat
 # Running the code
 
 After installing pyrosim and pybullet, clone the repository and change into the directory.
-Now run ```python3 generate_random_3d_morphologies.py``` . It'll generate 5 random 3D morphologies. You can re run this command for more random morphologies.
+Now run ```python3 search.py``` . It'll run parallel hill climber five times. In starting it'll show a random creature and then it'll show evolved creature for each run.
 
 
-# Task
 
-Task here is to generate random 3D morphologies. The links are randomly assigned a sensor. Green links have sensor while blue links don't have sensor.
 
 # world 
 

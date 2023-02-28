@@ -93,17 +93,17 @@ class ROBOT():
 		# print("bot", xPositionRobot, yPositionRobot, zPositionRobot)
 
 		# dist from ball (reach target location fitness)
-		dist1 = np.sqrt((xPositionTarget-xPositionRobot)**2 + (yPositionTarget-yPositionRobot)**2 + (zPositionTarget-zPositionRobot)**2)
+		# dist1 = np.sqrt((xPositionTarget-xPositionRobot)**2 + (yPositionTarget-yPositionRobot)**2 + (zPositionTarget-zPositionRobot)**2)
 
 		# dist from origin (fitness for covering max distance)
-		# dist2 = np.sqrt((xPositionRobot)**2 + (yPositionRobot)**2 + (zPositionRobot)**2)
+		dist2 = -np.sqrt((xPositionRobot)**2 + (yPositionRobot)**2 + (zPositionRobot)**2)
 
 		# dist = 0.7*dist1 + 0.3*dist2
 		# pronking
 		# dist = -zPositionRobot
 		# dist = xCoordinateOfLinkZero
 		
-		dist = dist1
+		dist = dist2
 		# print("x cord of link 0",xCoordinateOfLinkZero)
 		# print(dist)
 		fitnessFile = "tmp" + str(self.solutionID) + ".txt"

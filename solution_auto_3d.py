@@ -11,6 +11,8 @@ from joint import CREATURE_JOINT
 class SOLUTION_AUTO_3D():
 	def __init__(self, myID, fromScratch, randSeed):
 		self.random = random.Random(randSeed)
+		# print(fromScratch)
+		self.fromScratch = fromScratch
 		if fromScratch:
 			self.numLinks = self.random.randint(3,5)
 			self.sensor_prob = 50
@@ -31,12 +33,14 @@ class SOLUTION_AUTO_3D():
 			self.minCubeDim = 0.3
 			self.addSensorProb = 0.5
 			self.removeSensorProb = 0.5
-			self.mutateBodyProb = 0.8
+			self.mutateBodyProb = 1
 			self.mutateBrainProb = 1 - self.mutateBodyProb 
 
-		else:
-			self.mutateBodyProb = 0.9*self.mutateBodyProb
-			self.mutateBrainProb = 1 - self.mutateBodyProb 
+		# else:
+		# 	self.mutateBodyProb = 0.8*self.mutateBodyProb
+		# 	self.mutateBrainProb = 1 - self.mutateBodyProb
+		# 	print("body mutation rate", self.mutateBodyProb)
+		# 	print("brain mutation rate", self.mutateBrainProb) 
 
 		
 
@@ -349,21 +353,28 @@ class SOLUTION_AUTO_3D():
 		self.numSensorNeurons -= 1
 		return True
 
-	def Mutate(self):
-
+	def Mutate(self, mutateBodyProb, mutateBrainProb):
+		self.mutateBodyProb = mutateBodyProb
+		self.mutateBrainProb = mutateBrainProb
+		# print(self.mutateBodyProb, self.mutateBrainProb)
 		# change body
 		if self.random.random() < self.mutateBodyProb:
+			# print("changing body")
 			# randomly add sensor to a link without sensor
 			if self.random.random() < self.addSensorProb:
 				self.addSensorRandom()
+					# print("sensor added")
 
 			# randomly remove sensor from a link with sensor
 			if self.random.random() < self.removeSensorProb:
 				self.removeSensorRandom()
+					# print("sensor removed")
+
 
 
 		# change brain
 		if self.random.random() < self.mutateBrainProb:
+			# print("changing brain")
 			randomRow = self.random.randint(0,self.weights.shape[0]-1)
 			randomCol = self.random.randint(0,self.weights.shape[1]-1)
 			self.weights[randomRow][randomCol] = random.random()*2 - 1
