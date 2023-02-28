@@ -28,7 +28,7 @@ Task here is to reach as far as possible from the origin (i.e running fast)
 
 # Demo
 
-Youtube video [link](https://youtu.be/q94R_4tGaww)
+Youtube video [link](https://youtu.be/3HQX4aXXnlA)
 
 
 # Installation
