@@ -21,6 +21,8 @@ Following is a submission for assignment 8 of Artificial life [course](https://w
 
 ## Task 1
 Task here is to evovle a 3D creature that can go towards a target location (ball in this task).
+minimize fitness where fitness = euclidean_distance(robot, ball)
+```fitness = np.sqrt((x_robot - x_ball)**2 + (y_robot - y_ball)**2 + (z_robot-z_ball)**2)```
 
 ### Fitness curve task 1
 ![diagram4](./chase_the_ball_fitness_curves.png)
@@ -29,6 +31,9 @@ Task here is to evovle a 3D creature that can go towards a target location (ball
 
 ## Task 2
 Task here is to reach as far as possible from the origin (i.e running fast) 
+
+maximize fitness where fitness = euclidean_distance(robot, origin)
+```fitness = np.sqrt(x_robot**2 + y_robot**2 + z_robot**2)```
 
 ### Fitness curve task 2
 ![diagram5](./Fitness_Move_Fast.png)
