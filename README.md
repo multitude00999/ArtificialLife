@@ -7,7 +7,12 @@ Following is a submission for assignment 7 of Artificial life [course](https://w
 ![flow](./random_3d_morphology.png)
 
 # Flow diagram of how body is mutated
+
+## mutation 1 Add or remove sensor
 ![diagram2](./mutateBody.png)
+
+## mutation 2 Add or remove a link
+![diagram5](./mutateBodyParts.png)
 
 # Flow diagram of how brain is mutated
 ![diagram3](./mutateBrain.png)
