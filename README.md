@@ -40,7 +40,7 @@ maximize fitness where fitness = euclidean_distance(robot, origin)
 
 # Demo
 
-Youtube video [link](https://youtu.be/3HQX4aXXnlA)
+Youtube video [link](https://www.youtube.com/watch?v=LvTa5BgFEJA)
 
 
 # Installation
