@@ -1,6 +1,6 @@
 # Evolving 3D creature
 
-Following is a submission for assignment 7 of Artificial life [course](https://www.mccormick.northwestern.edu/mechanical/academics/courses/descriptions/495-artificial-life.html). 
+Following is a submission for assignment 8 of Artificial life [course](https://www.mccormick.northwestern.edu/mechanical/academics/courses/descriptions/495-artificial-life.html). 
 
 
 # flow diagram of how 3D morphologies are created
