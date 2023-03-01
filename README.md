@@ -25,11 +25,13 @@ Task here is to evovle a 3D creature that can go towards a target location (ball
 ### Fitness curve task 1
 ![diagram4](./chase_the_ball_fitness_curves.png)
 
-### Fitness curve task 2
-![diagram5](./Fitness_Move_Fast.png)
+
 
 ## Task 2
 Task here is to reach as far as possible from the origin (i.e running fast) 
+
+### Fitness curve task 2
+![diagram5](./Fitness_Move_Fast.png)
 
 # Demo
 
