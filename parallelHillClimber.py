@@ -14,6 +14,7 @@ class PARALLEL_HILL_CLIMBER():
 
 		self.parents = {}
 		self.randomSeed = randomSeed
+		self.showRandom = show_random
 		self.random = random.Random(self.randomSeed)
 		self.nextAvailableID = 0
 		self.best_creature_fitness = []
@@ -24,11 +25,10 @@ class PARALLEL_HILL_CLIMBER():
 			self.parents[i] = SOLUTION_AUTO_3D(self.nextAvailableID, fromScratch = True, randSeed = randomSeed)
 			self.nextAvailableID+=1
 
-		if show_random:
-			self.show_random()
-
 	def Evolve(self):
 		self.Evaluate(self.parents, fromScratch = True)
+		if self.showRandom:
+			self.show_random()
 		self.get_best_creature_fitness()
 		for currentGeneration in range(c.numberOfGenerations):
 			print("====== generation ", currentGeneration , " ================ ")
@@ -99,7 +99,7 @@ class PARALLEL_HILL_CLIMBER():
 		self.best_creature_fitness.append(best_fitness)
 
 	def show_random(self):
-		self.parents[0].Start_Simulation("GUI", "1", "1", fromScratch = True)
+		self.parents[0].Start_Simulation("GUI", "1", "1", fromScratch = False)
 		self.parents[0].Wait_For_Simulation_To_End()
 
 	def show_random_child(self):
