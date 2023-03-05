@@ -3,6 +3,7 @@ from parallelHillClimber import PARALLEL_HILL_CLIMBER
 import time
 import random
 numRuns = 1
+# random.seed(2020)
 
 for i in range(numRuns):
 	t1 = time.time()

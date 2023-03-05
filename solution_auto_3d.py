@@ -11,28 +11,43 @@ from joint import CREATURE_JOINT
 class SOLUTION_AUTO_3D():
 	def __init__(self, myID, fromScratch, randSeed):
 		self.random = random.Random(randSeed)
-		# print(fromScratch)
 		self.fromScratch = fromScratch
 		if fromScratch:
 			self.numLinks = self.random.randint(3,5)
 			self.sensor_prob = 50
 			self.keepSensor = self.random.choices([0,1], weights = [100 - self.sensor_prob, self.sensor_prob], k=self.numLinks)
 			self.numSensorNeurons = np.sum(self.keepSensor)
+
+			# atleast one sensor
 			if self.numSensorNeurons == 0:
 				randIdx = self.random.randint(0,len(self.keepSensor)-1)
 				self.keepSensor[randIdx] = 1
 				self.numSensorNeurons +=1
+
+			# add as many motors as number of joints
 			self.numMotorNeurons = self.numLinks-1
+
+			# seed numpy
 			np.random.seed(randSeed)
+
+			# initialize brain weights
 			self.weights = np.random.rand(self.numSensorNeurons, self.numMotorNeurons)
 			self.weights = self.weights*2 - 1
+
+			# unique solution Id
 			self.myID = myID
+
+			# max and min cube dim
 			self.maxCubeXDim = 1
 			self.maxCubeYDim = 1
 			self.maxCubeZDim = 1
 			self.minCubeDim = 0.3
+
+			# probability of adding and removing a sensor
 			self.addSensorProb = 0.5
 			self.removeSensorProb = 0.5
+
+			# probability of mutating body and brain
 			self.mutateBodyProb = 1
 			self.mutateBrainProb = 1 - self.mutateBodyProb 
 
@@ -88,7 +103,11 @@ class SOLUTION_AUTO_3D():
 		while not os.path.exists("world.sdf"):
 			time.sleep(0.01)
 
+
+
 	def cubeTouchingTheGround(self):
+
+		# find the lowest hanging cube
 		low = float('inf')
 		for i in range(len(self.links)):
 			if self.links[i].globalPos[2]-self.links[i].dim[2]/2 < low:
@@ -164,6 +183,71 @@ class SOLUTION_AUTO_3D():
 		return [cubeX, cubeY, cubeZ]
 
 
+	def checkOverlapInDim(self, dMin1, dMax1, dMin2, dMax2):
+		return (dMin2 <= dMax1 and dMin2 >= dMin1) or (dMax2 <= dMax1 and dMax2 >= dMin1) or (dMin1 <= dMax2 and dMin1 >= dMin2) or (dMax1 <= dMax2 and dMax1 >= dMin2)
+
+
+	def checkOverLapBetween2Cube(self, cube1, cube2):
+		cube1GlobalPos = cube1.globalPos
+		cube2GlobalPos = cube2.globalPos
+		cube1Dim = cube1.dim
+		cube2Dim = cube2.dim
+		# print("cube1", cube1GlobalPos, cube1Dim)
+		# print("cube2", cube2GlobalPos, cube2Dim)
+		xOverlap = self.checkOverlapInDim(cube1GlobalPos[0] - cube1Dim[0]/2, cube1GlobalPos[0] + cube1Dim[0]/2, \
+											cube2GlobalPos[0] - cube2Dim[0]/2, cube2GlobalPos[0] + cube2Dim[0]/2)
+
+		yOverlap = self.checkOverlapInDim(cube1GlobalPos[1] - cube1Dim[1]/2, cube1GlobalPos[1] + cube1Dim[1]/2, \
+											cube2GlobalPos[1] - cube2Dim[1]/2, cube2GlobalPos[1] + cube2Dim[1]/2)
+
+		zOverlap = self.checkOverlapInDim(cube1GlobalPos[2] - cube1Dim[2]/2, cube1GlobalPos[2] + cube1Dim[2]/2, \
+											cube2GlobalPos[2] - cube2Dim[2]/2, cube2GlobalPos[2] + cube2Dim[2]/2)
+
+		return xOverlap and yOverlap and zOverlap
+
+
+	def checkOverlap(self, currCube):
+
+		for link in self.links:
+			if self.checkOverLapBetween2Cube(currCube, link):
+				return True
+		return False
+
+	def addJoint(self, i):
+		parent_cube_idx = self.random.randint(0, len(self.links)-1)
+		rand_face = self.random.choice(["x_plus", "y_plus", "z_plus", "x_minus", "y_minus", "z_minus"])
+		self.links[parent_cube_idx].occupied_face.append(rand_face)
+
+		# get position on face
+		jointCoords = self.getJointPosOnFace(parent_cube_idx, rand_face)
+		if rand_face.startswith("x"):
+			randAxis = 	"0 1 0"
+		elif rand_face.startswith("y"):
+			randAxis = 	"0 0 1"
+
+		elif rand_face.startswith("z"):
+			randAxis = 	"0 1 0"
+
+		joint = CREATURE_JOINT(str(parent_cube_idx) + '_' + str(i), jointCoords, randAxis)
+		joint.jointGlobalPos[0] += self.links[parent_cube_idx].globalPos[0] + joint.jointPos[0]
+		joint.jointGlobalPos[1] += self.links[parent_cube_idx].globalPos[1]  + joint.jointPos[1]
+		joint.jointGlobalPos[2] += self.links[parent_cube_idx].globalPos[2]  + joint.jointPos[2]
+
+		return joint, parent_cube_idx, rand_face
+
+	def addLink(self, i, joint, rand_face, parent_cube_idx):
+		size_x = self.random.uniform(self.minCubeDim, self.maxCubeXDim)
+		size_y = self.random.uniform(self.minCubeDim, self.maxCubeYDim)
+		size_z = self.random.uniform(self.minCubeDim, self.maxCubeXDim)
+		pos = self.getCubePosReljoint([size_x, size_y, size_z], rand_face)
+
+		par = LINK(str(i), self.links[parent_cube_idx], [size_x, size_y, size_z], pos)
+		par.globalPos[0] = par.relPos[0] + joint.jointGlobalPos[0] 
+		par.globalPos[1] = par.relPos[1] + joint.jointGlobalPos[1]
+		par.globalPos[2] = par.relPos[2] + joint.jointGlobalPos[2]
+
+		return par
+
 	def Generate_Body(self, fromScratch):
 		pyrosim.Start_URDF("body" + str(self.myID) + ".urdf")
 
@@ -177,38 +261,7 @@ class SOLUTION_AUTO_3D():
 			for i in range(self.numLinks):
 
 				if i != 0:
-					# randomly choose face
-					parent_cube_idx = self.random.randint(0, len(self.links)-1)
-					rand_face = self.random.choice(["x_plus", "y_plus", "z_plus", "x_minus", "y_minus", "z_minus"])
-
-					# check if the face is occupied
-					while (rand_face in self.links[parent_cube_idx].occupied_face):
-						rand_face = self.random.choice(["x_plus", "y_plus", "z_plus", "x_minus", "y_minus", "z_minus"])
-					self.links[parent_cube_idx].occupied_face.append(rand_face)
-					# print("random face", rand_face)
-					# randomly choose parent cube from already generated cubes
-					
-
-					# print("pci", parent_cube_idx)
-					# get position on face
-					jointCoords = self.getJointPosOnFace(parent_cube_idx, rand_face)
-
-					# print("jointCoords", jointCoords)
-					# randAxis = random.choice(["1 0 0", "0 0 1", "0 1 0"])
-					if rand_face.startswith("x"):
-						randAxis = 	"0 1 0"
-					elif rand_face.startswith("y"):
-						randAxis = 	"0 0 1"
-
-					elif rand_face.startswith("z"):
-						randAxis = 	"0 1 0"
-
-					joint = CREATURE_JOINT(str(parent_cube_idx) + '_' + str(i), jointCoords, randAxis)
-					joint.jointGlobalPos[0] += self.links[parent_cube_idx].globalPos[0] + joint.jointPos[0]
-					joint.jointGlobalPos[1] += self.links[parent_cube_idx].globalPos[1]  + joint.jointPos[1]
-					joint.jointGlobalPos[2] += self.links[parent_cube_idx].globalPos[2]  + joint.jointPos[2]
-
-					self.joints.append(joint)
+					joint, parent_cube_idx, rand_face = self.addJoint(i)
 
 				if i == 0:
 					size_x = self.random.uniform(self.minCubeDim, self.maxCubeXDim)
@@ -221,25 +274,15 @@ class SOLUTION_AUTO_3D():
 					self.links.append(par)
 					# print(par.linkName, par.relPos , par.dim, par.mass, par.color, par.rgba)
 				else:
-					size_x = max(self.random.random()*self.maxCubeXDim, self.minCubeDim)
-					size_y = max(self.random.random()*self.maxCubeYDim, self.minCubeDim)
-					size_z = max(self.random.random()*self.maxCubeZDim, self.minCubeDim)
-					pos = self.getCubePosReljoint([size_x, size_y, size_z], rand_face)
-					par = LINK(str(i), self.links[parent_cube_idx], [size_x, size_y, size_z], pos)
-					# par.globalPosX = par.relPos[0] + self.joints[i-1].jointPos[0] + par.parent.globalPos[0] 
-					# par.globalPosY = par.relPos[1] + self.joints[i-1].jointPos[1] + par.parent.globalPos[1] 
-					# par.globalPosZ = par.relPos[2] + self.joints[i-1].jointPos[2] + par.parent.globalPos[2] 
-
-					par.globalPosX = par.relPos[0] + joint.jointGlobalPos[0] 
-					par.globalPosY = par.relPos[1] + joint.jointGlobalPos[1]
-					par.globalPosZ = par.relPos[2] + joint.jointGlobalPos[2]
-
-					# par.globalPosX = par.relPos[0]  + par.parent.globalPos[0] 
-					# par.globalPosY = par.relPos[1] + par.parent.globalPos[1] 
-					# par.globalPosZ = par.relPos[2] + par.parent.globalPos[2]				
+					par = self.addLink(i, joint, rand_face, parent_cube_idx)
+					# print("rand face", rand_face)
+					while self.checkOverlap(par):
+						joint, parent_cube_idx, rand_face = self.addJoint(i)
+						par = self.addLink(i, joint, rand_face, parent_cube_idx)			
 					if self.keepSensor[i]:
 						par.setColor("Green", "0 1.0 0 1.0")
 					self.links.append(par)
+					self.joints.append(joint)
 
 
 			offset = self.cubeTouchingTheGround()
@@ -360,6 +403,9 @@ class SOLUTION_AUTO_3D():
 		# change body
 		if self.random.random() < self.mutateBodyProb:
 			# print("changing body")
+
+
+
 			# randomly add sensor to a link without sensor
 			if self.random.random() < self.addSensorProb:
 				self.addSensorRandom()
