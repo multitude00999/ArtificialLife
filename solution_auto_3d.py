@@ -13,7 +13,9 @@ class SOLUTION_AUTO_3D():
 		self.random = random.Random(randSeed)
 		self.fromScratch = fromScratch
 		if fromScratch:
-			self.numLinks = self.random.randint(3,5)
+			self.minLinks = 3
+			self.maxLinks = 5
+			self.numLinks = self.random.randint(self.minLinks, self.maxLinks)
 			self.sensor_prob = 50
 			self.keepSensor = self.random.choices([0,1], weights = [100 - self.sensor_prob, self.sensor_prob], k=self.numLinks)
 			self.numSensorNeurons = np.sum(self.keepSensor)
@@ -41,11 +43,15 @@ class SOLUTION_AUTO_3D():
 			self.maxCubeXDim = 1
 			self.maxCubeYDim = 1
 			self.maxCubeZDim = 1
-			self.minCubeDim = 0.3
+			self.minCubeDim = 0.2
 
 			# probability of adding and removing a sensor
 			self.addSensorProb = 0.5
 			self.removeSensorProb = 0.5
+
+			# probability of adding or removing link
+			self.addLinkProb = 0.5
+			self.removeLinkProb = 1 - self.addLinkProb
 
 			# probability of mutating body and brain
 			self.mutateBodyProb = 1
@@ -347,7 +353,7 @@ class SOLUTION_AUTO_3D():
 			if self.keepSensor[i] == 1:
 				pyrosim.Send_Sensor_Neuron(name = cnt , linkName = str(i))
 				cnt+=1
-
+		self.numMotorNeurons = self.numLinks - 1
 		for i in range(self.numMotorNeurons):
 			pyrosim.Send_Motor_Neuron( name = i + self.numSensorNeurons, jointName = self.joints[i].parentLink + "_" + self.joints[i].childLink)
 
@@ -396,6 +402,42 @@ class SOLUTION_AUTO_3D():
 		self.numSensorNeurons -= 1
 		return True
 
+	def addLinkMutation(self):
+		self.numLinks += 1
+		i = self.numLinks-1
+		joint, parent_cube_idx, rand_face = self.addJoint(i)
+		par = self.addLink(i, joint, rand_face, parent_cube_idx)
+			# print("rand face", rand_face)
+		while self.checkOverlap(par):
+			joint, parent_cube_idx, rand_face = self.addJoint(i)
+			par = self.addLink(i, joint, rand_face, parent_cube_idx)
+
+		newWeights = np.random.rand(self.numSensorNeurons, self.numMotorNeurons + 1)
+		newWeights[:, :self.numMotorNeurons] = self.weights
+		newWeights[:, self.numMotorNeurons:] = np.random.rand(self.numSensorNeurons, 1)
+		self.weights = newWeights
+		self.numMotorNeurons += 1
+
+		self.keepSensor.append(self.random.randint(0,1))			
+		if self.keepSensor[i]:
+			par.setColor("Green", "0 1.0 0 1.0")
+			newWeights = np.random.rand(self.numSensorNeurons + 1, self.numMotorNeurons)
+			newWeights[:self.numSensorNeurons, :] = self.weights
+			newWeights[self.numSensorNeurons:] = np.random.rand(1, self.numMotorNeurons)
+			self.weights = newWeights
+			self.numSensorNeurons += 1
+		self.links.append(par)
+		self.joints.append(joint)
+
+
+		print("link added")
+
+
+
+	def removeLinkMutation(self):
+		pass
+
+
 	def Mutate(self, mutateBodyProb, mutateBrainProb):
 		self.mutateBodyProb = mutateBodyProb
 		self.mutateBrainProb = mutateBrainProb
@@ -404,7 +446,11 @@ class SOLUTION_AUTO_3D():
 		if self.random.random() < self.mutateBodyProb:
 			# print("changing body")
 
+			if self.random.random() < self.addLinkProb and self.numLinks < self.maxLinks:
+				self.addLinkMutation()
 
+			elif self.random.random() < self.removeLinkProb and self.numLinks > self.minLinks:
+				self.removeLinkMutation()
 
 			# randomly add sensor to a link without sensor
 			if self.random.random() < self.addSensorProb:
@@ -412,7 +458,7 @@ class SOLUTION_AUTO_3D():
 					# print("sensor added")
 
 			# randomly remove sensor from a link with sensor
-			if self.random.random() < self.removeSensorProb:
+			elif self.random.random() < self.removeSensorProb:
 				self.removeSensorRandom()
 					# print("sensor removed")
 
