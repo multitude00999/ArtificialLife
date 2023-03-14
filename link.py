@@ -9,6 +9,7 @@ class LINK:
 		self.mass = 1.0
 		self.parent = parent
 		self.occupied_face = []
+		self.isDangling = True
 
 
 	def setDim(self, l, w, h):

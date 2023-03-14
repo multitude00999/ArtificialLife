@@ -5,6 +5,7 @@ import time
 import os
 import pickle
 import random
+from collections import defaultdict
 
 class PARALLEL_HILL_CLIMBER():
 	def __init__(self, show_random, randomSeed):
@@ -20,10 +21,13 @@ class PARALLEL_HILL_CLIMBER():
 		self.best_creature_fitness = []
 		self.bodyMutationRate = 1
 		self.brainMutationRate = 1 - self.bodyMutationRate
+		self.lineage = {}
 		for i in range(c.populationSize):
 			randomSeed = self.random.randrange(1000000)
 			self.parents[i] = SOLUTION_AUTO_3D(self.nextAvailableID, fromScratch = True, randSeed = randomSeed)
 			self.nextAvailableID+=1
+			self.lineage[i] = []
+			self.lineage[i].append(self.parents[i])
 
 	def Evolve(self):
 		self.Evaluate(self.parents, fromScratch = True)
@@ -74,6 +78,7 @@ class PARALLEL_HILL_CLIMBER():
 		for parent in self.parents:
 			if self.parents[parent].fitness > self.children[parent].fitness:
 				self.parents[parent] = copy.deepcopy(self.children[parent])
+				self.lineage[parent].append(self.parents[parent])
 
 	def Show_Best(self):
 		best_parent = 0
@@ -82,7 +87,7 @@ class PARALLEL_HILL_CLIMBER():
 			if best_fitness > self.parents[parent].fitness:
 				best_parent = parent
 				best_fitness = self.parents[parent].fitness
-
+		self.saveCreature(best_parent)
 		print("best parent:", best_parent, "fitness:", best_fitness)
 
 		self.parents[best_parent].Start_Simulation("GUI", "1", "1", fromScratch = False)
@@ -105,7 +110,19 @@ class PARALLEL_HILL_CLIMBER():
 	def show_random_child(self):
 		self.children[0].Start_Simulation("GUI", "1", "1", fromScratch = False)
 		self.children[0].Wait_For_Simulation_To_End()
-		
+
+
+	def saveCreature(self, i):
+		# with open('./bestCreatures/' + str(self.parents[i].myID) + "_" + str(self.randomSeed) + ".pkl", 'wb') as f:
+		with open('./bestCreatures.pkl', 'wb') as f: # temporary 
+			pickle.dump(self.parents[i], f)
+
+	def saveGeneration(self):
+		with open('./bestCreatures.pkl', 'wb') as f: # temporary 
+			pickle.dump(self.parents[i], f)
+	def saveLineage(self):
+		with open('./lineage.pkl', 'wb') as f: # temporary 
+			pickle.dump(self.lineage, f)
 
 	def Print(self):
 		for parent in self.parents:
@@ -114,6 +131,7 @@ class PARALLEL_HILL_CLIMBER():
 	def __del__(self):
 		with open('./bestFitnessVals/bestCreatureFitnessVals_' + str(self.randomSeed) + '.pkl' , 'wb') as f:
 			pickle.dump(self.best_creature_fitness, f)
+		# self.saveLineage()
 		for file in os.listdir("."):
 			if file.startswith("brain") or file.startswith("fitness") or file == "1" or file.startswith("body"):
 				os.system("rm {}".format(file))
