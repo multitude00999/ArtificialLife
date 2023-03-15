@@ -176,27 +176,38 @@ We can clearly see from the best and average fitness plots that coevolving brain
 <!-- # Discussion -->
 
 # Running the code
+## Dependencies
+
+```
+pip install pybullet
+pip install numpy
+pip install matplotlib
+```
 
 ## Setup
 Follow instruction given [here](https://www.reddit.com/r/ludobots/wiki/installation/)
 
+## Steps
+
+Clone this repo. Follow setup instructions and install required libraries.
+
 ## For running evolution
 
-run ```python3 search.py```
+Run ```python3 search.py```. Try changing number of generation otherwise it'll take a lot of time.
 
 
 ## see best creature
-uncomment top part of view.py and run ```python3 view.py```
+Run ```python3 viewBestCreature.py```
 
-## see creature evolving
+## see creature evolving (Evolution history)
 
-run ```python3 view.py 6```
+Run ```python3 viewLineage.py 6```
 
 ## Generate graphs
-run ```python3 analyze.py```
+Run ```python3 analyze.py```
 
 ## Reproducibility
-for reproducibility random seed is fixed in the search.py file. To see already evolved creatures run ```python3 view.py 6```
+For reproducibility random seed is fixed in the search.py file. This makes sure that same creatures will be evolved.
 
 # References
 Artificial life [course](https://www.mccormick.northwestern.edu/mechanical/academics/courses/descriptions/495-artificial-life.html) taught by [Dr. Sam Kriegman](https://www.mccormick.northwestern.edu/research-faculty/directory/profiles/kriegman-sam.html) at Northwestern University.
