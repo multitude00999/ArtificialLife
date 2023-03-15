@@ -116,13 +116,13 @@ Parallel hill climbing (PHC) is used for evolving the creatures gradually. Paral
 ![phc_flow](./diagrams/parallel_hill_climber.png)
 
 PHC has following steps:
-1. Evaluate
+* Evaluate
 During this step each of the creature is simulated and the fitness score is calculated. The fitness score is assigned to the respective creature. The fitness score denotes how good the creature is for the task in hand.
 
-2. Spawn
+* Spawn
 During this step copies of the parent are created. These copies are also known as children.
 
-3. Mutate
+* Mutate
 	
 During this step, small and random changes are made in the children. **This step differs for the two experimental setup we have**. In one step only brain is mutated, while in the other both brain and body are mutated.
 ## Flow diagram of how body is mutated
@@ -143,7 +143,7 @@ During this step, small and random changes are made in the children. **This step
 ![brain_mutation](./diagrams/brain_mutation.png)
 
 
-4. Select
+* Select
 In this step, each of the mutated children are compared with their respective parent. If the children's fitness is better than the parent then the parent is replaced with the child (i.e child becomes parent for next generation).
 Note: The children are only compared to their repspective parent, this way the evolution of one family does not get affected by other family. This might become an issue sometimes.
 It is illustrated below
