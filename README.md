@@ -115,24 +115,42 @@ The creature has revolute joints between the links. The robot rotates the link v
 
 # How Evolution works (Parallel Hill Climber)
 
-<insert fitness>
-<insert evolution flow>
-<how selection works>
-<lineage>
-<mutation example and demonstration>
+Parallel hill climbing (PHC) is used for evolving the creatures gradually. Parallel hill climbing is similar to [hill climbing](https://en.wikipedia.org/wiki/Hill_climbing). The difference here is that there are multiple parents (population size >1). 
 
+![phc_flow](./diagrams/parallel_hill_climber.png)
 
-## Mutation
-## Flow diagram of how body is mutated
+PHC has following steps:
+1. Evaluate
+	During this step each of the creature is simulated and the fitness score is calculated. The fitness score is assigned to the respective creature. The fitness score denotes how good the creature is for the task in hand.
 
-### mutation 1 Add or remove sensor
-![diagram2](./mutateBody.png)
+2. Spawn
+	During this step copies of the parent are created. These copies are also known as children.
 
-## #mutation 2 Add or remove a link
-![diagram5](./mutateBodyParts.png)
+3. Mutate
+	During this step, small and random changes are made in the children. **This step differs for the two experimental setup we have**. In one step only brain is mutated, while in the other both brain and body are mutated.
+	## Flow diagram of how body is mutated
 
-### Flow diagram of how brain is mutated
-![diagram3](./mutateBrain.png)
+	### mutation 1 Add or remove sensor
+	![diagram2](./mutateBody.png)
+
+	### mutation 2 Add or remove a link
+	![diagram5](./mutateBodyParts.png)
+
+	## Flow diagram of how brain is mutated
+	![diagram3](./mutateBrain.png)
+
+	Illustrations of these mutations are as follows
+
+	![add_body](./diagrams/add_mutation.png)
+	![remove_body](./diagrams/remove_mutation.png)
+	![brain_mutation](./diagrams/brain_mutation.png)
+
+4. Select
+	In this step, each of the mutated children are compared with their respective parent. If the children's fitness is better than the parent then the parent is replaced with the child (i.e child becomes parent for next generation).
+	Note: The children are only compared to their repspective parent, this way the evolution of one family does not get affected by other family. This might become an issue sometimes.
+	It is illustrated below
+	![selection](./diagrams/selection_step.png)
+
 
 
 # results
