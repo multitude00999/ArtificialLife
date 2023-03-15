@@ -64,10 +64,6 @@ The creature is made of cubes (links). The size of these links is completely arb
 It cab seen below how a rabdom 3D creature is created for initial genotype
 ![flow](https://github.com/multitude00999/ArtificialLife/blob/3DEvolvingBots/diagrams/randomBodyGenerationFinal.gif?raw=true)
 
-<!-- ### flow diagram of how 3D morphologies are created
-![flow2](./random_3d_morphology.png) -->
-<!-- <insert phoenotype and genotype diagram>
-<insert diagram of relative position> -->
 
 ## Genotype and phenotype representation
 Here i've used direct encoding for genotype. Since we're randomly attaching links we can represent by asingle recursive arrow. This genotype encoding results in the phenotype on right.
@@ -121,35 +117,37 @@ Parallel hill climbing (PHC) is used for evolving the creatures gradually. Paral
 
 PHC has following steps:
 1. Evaluate
-	During this step each of the creature is simulated and the fitness score is calculated. The fitness score is assigned to the respective creature. The fitness score denotes how good the creature is for the task in hand.
+During this step each of the creature is simulated and the fitness score is calculated. The fitness score is assigned to the respective creature. The fitness score denotes how good the creature is for the task in hand.
 
 2. Spawn
-	During this step copies of the parent are created. These copies are also known as children.
+During this step copies of the parent are created. These copies are also known as children.
 
 3. Mutate
-	During this step, small and random changes are made in the children. **This step differs for the two experimental setup we have**. In one step only brain is mutated, while in the other both brain and body are mutated.
-	## Flow diagram of how body is mutated
+	
+During this step, small and random changes are made in the children. **This step differs for the two experimental setup we have**. In one step only brain is mutated, while in the other both brain and body are mutated.
+## Flow diagram of how body is mutated
 
-	### mutation 1 Add or remove sensor
-	![diagram2](./mutateBody.png)
+### mutation 1 Add or remove sensor
+![diagram2](./mutateBody.png)
 
-	### mutation 2 Add or remove a link
-	![diagram5](./mutateBodyParts.png)
+### mutation 2 Add or remove a link
+![diagram5](./mutateBodyParts.png)
 
-	## Flow diagram of how brain is mutated
-	![diagram3](./mutateBrain.png)
+### illustration of body mutations
 
-	Illustrations of these mutations are as follows
+![add_body](./diagrams/add_mutation.png)
+![remove_body](./diagrams/remove_mutation.png)
 
-	![add_body](./diagrams/add_mutation.png)
-	![remove_body](./diagrams/remove_mutation.png)
-	![brain_mutation](./diagrams/brain_mutation.png)
+## Flow diagram of how brain is mutated
+![diagram3](./mutateBrain.png)
+![brain_mutation](./diagrams/brain_mutation.png)
+
 
 4. Select
-	In this step, each of the mutated children are compared with their respective parent. If the children's fitness is better than the parent then the parent is replaced with the child (i.e child becomes parent for next generation).
-	Note: The children are only compared to their repspective parent, this way the evolution of one family does not get affected by other family. This might become an issue sometimes.
-	It is illustrated below
-	![selection](./diagrams/selection_step.png)
+In this step, each of the mutated children are compared with their respective parent. If the children's fitness is better than the parent then the parent is replaced with the child (i.e child becomes parent for next generation).
+Note: The children are only compared to their repspective parent, this way the evolution of one family does not get affected by other family. This might become an issue sometimes.
+It is illustrated below
+![selection](./diagrams/selection_step.png)
 
 
 
