@@ -18,6 +18,14 @@ Following is a submission for final project of Artificial life [course](https://
 
 In nature it's often seen that creatures coevolve body and brain during evolution. To understand whether coevolution acutally helps i have conducted following experiments. Motivation behind this project is to understand whether coevolving brain and body actually helps. To understand that hypothesis testing is done.
 
+# Task
+
+Task here is to reach as far as possible from the origin (i.e running fast) 
+
+maximize fitness where fitness = euclidean_distance(robot, origin)
+```fitness = np.sqrt(x_robot**2 + y_robot**2 + z_robot**2)```
+
+
 # Hypothesis
 
 ## Null hypothesis
@@ -53,21 +61,26 @@ World is ver simple and non dynamic. The world remains same for each generation 
 ## Body
 
 The creature is made of cubes (links). The size of these links is completely arbitrary and decided by evolution. These links are connected by revolute joint. Any two adjacent links have the revolute joint between them. This revolute joint is later connected to a motor neuron which makes the links move rotate around the joint. 
-![Teaser](https://github.com/multitude00999/ArtificialLife/blob/3DEvolvingBots/diagrams/randomBodyGenerationFinal.gif?raw=true)
-<insert phoenotype and genotype diagram>
-<insert diagram of relative position>
+![flow](https://github.com/multitude00999/ArtificialLife/blob/3DEvolvingBots/diagrams/randomBodyGenerationFinal.gif?raw=true)
+
+### flow diagram of how 3D morphologies are created
+![flow2](./random_3d_morphology.png)
+<!-- <insert phoenotype and genotype diagram>
+<insert diagram of relative position> -->
+
+
 
 ## sensors
 
 A link can have a touch sensor. A link is assigned a touch sensor with a probability of 0.5 for initial genotype creation. The touch sensor return a +1 value when in contact with the ground and -1 otherwise. The touch sensor helps the creature in assesing the environment. The touch sensor also helps the creature in having knowledge of it's current state.
 
-<insert green and blue color link>
+<!-- <insert green and blue color link> -->
 
 ## Motors
 
 A motor is attched at each of the joint with an axis of rotation depending on the direction which the child link is attached. Maximum motor strength is set to <enter>. 
 
-<insert motor link diagram>
+<!-- <insert motor link diagram> -->
 
 ## Brain
 
@@ -80,11 +93,16 @@ The core part of our brain are the synapse weights. These weights are updated wh
 
 Overall brain of our creature is a fully connected neural network with only 2 layers. The input layer is of sensory neurons. This layer is connected to the motor neuron layer with synapse weights. The network takes touch sensor values as input. The output of the netowrk is fed to the motor neurons which inturn controls the movement of the creature.
 
+### flow diagram of brain for 3 sensor nueuron and 2 motor neuron
+
+![flow](./SensorMotorNeuronConnection.png)
+
+
 ## Creature locomotion
 The creature has revolute joints between the links. The robot rotates the link via motor neurons. The link movement in turn moves the whole creature.
-<insert diagram>
+<!-- <insert diagram>
 
-<brain connections>
+<brain connections> -->
 
 # How Evolution works (Parallel Hill Climber)
 
@@ -94,110 +112,71 @@ The creature has revolute joints between the links. The robot rotates the link v
 <lineage>
 <mutation example and demonstration>
 
+
+## Mutation
+## Flow diagram of how body is mutated
+
+### mutation 1 Add or remove sensor
+![diagram2](./mutateBody.png)
+
+## #mutation 2 Add or remove a link
+![diagram5](./mutateBodyParts.png)
+
+### Flow diagram of how brain is mutated
+![diagram3](./mutateBrain.png)
+
+
 # results
 
 # fitness plots
 
-<insert average and best fitness plots>
+## best fitness plots
+![diagram10](./Diagrams/exp1_best_fitness_plot.png)
 
-# Discussion
+![diagram11](./Diagrams/exp2_evolve_only_brain.png)
 
+## average fitness plots
 
 
 # Conclusion
 
+We can clearly see from the best fitness plots that coevolving brain and body has a significantly better performance compare to evolving just brain. Hence by proof of evidence, we reject the null hypothesis. So alternate hypothesis "For running task coevolving brain and body is helpful" is proved.
+
+
+<!-- # Discussion -->
+
 # Running the code
 
 ## Setup
+Follow instruction given [here](https://www.reddit.com/r/ludobots/wiki/installation/)
 
-## Run evolution
+## For running evolution
+
+run ```python3 search.py```
+
 
 ## see best creature
+uncomment top part of view.py and run ```python3 view.py```
 
 ## see creature evolving
+
+run ```python3 view.py 6```
 
 ## Generate graphs
 
 ## Reproducibility
-<added random seed for evolution in search.py>
+run ```python3 view.py 6```
 
 # References
 
 
-
-
-
-
-# flow diagram of how 3D morphologies are created
-![flow](./random_3d_morphology.png)
-
-# Flow diagram of how body is mutated
-
-## mutation 1 Add or remove sensor
-![diagram2](./mutateBody.png)
-
-## mutation 2 Add or remove a link
-![diagram5](./mutateBodyParts.png)
-
-# Flow diagram of how brain is mutated
-![diagram3](./mutateBrain.png)
-
-# Task
-
-## Task 1
-Task here is to evovle a 3D creature that can go towards a target location (ball in this task).
-minimize fitness where fitness = euclidean_distance(robot, ball)
-```fitness = np.sqrt((x_robot - x_ball)**2 + (y_robot - y_ball)**2 + (z_robot-z_ball)**2)```
-
-### Fitness curve task 1
-![diagram4](./chase_the_ball_fitness_curves.png)
-
-
-
-## Task 2
-Task here is to reach as far as possible from the origin (i.e running fast) 
-
-maximize fitness where fitness = euclidean_distance(robot, origin)
-```fitness = np.sqrt(x_robot**2 + y_robot**2 + z_robot**2)```
-
-### Fitness curve task 2
-![diagram5](./Fitness_Move_Fast.png)
-
-# Demo
-
-Youtube video [link](https://www.youtube.com/watch?v=LvTa5BgFEJA)
-
-
-# Installation
-
-Follow instruction given [here](https://www.reddit.com/r/ludobots/wiki/installation/)
-
-# Running the code
-
-After installing pyrosim and pybullet, clone the repository and change into the directory.
-Now run ```python3 search.py``` . It'll run parallel hill climber five times. In starting it'll show a random creature and then it'll show evolved creature for each run.
-
-
-
-
-# world 
-
-World contains only two things (the horizontal plane) and spherical ball
-
-# Creature
-
-Creature has a 3D morphology with number of links ranging between [3,5] and number of joints ranging between [2,4] joints (revolute) with axis of rotation randomly assigned along x, y or z direction. 
-
-# Brain
-
-Brain contains random number of sensor nueorons and ranodm number of motor neurons each connected to a joint. each of this motor neuron is connected to all of the sensor neurons. There are no hidden neurons. 
-
-## flow diagram of brain for 3 sensor nueuron and 2 motor neuron
-
-![flow](./SensorMotorNeuronConnection.png)
-
-# References
 
 The codebase is developed as part of [ludobots course](https://www.reddit.com/r/ludobots/).
 
 Simulation is built using Pyrosim [git](https://github.com/jbongard/pyrosim).
+
+
+
+
+
+
