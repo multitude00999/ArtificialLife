@@ -131,9 +131,9 @@ The creature has revolute joints between the links. The robot rotates the link v
 # fitness plots
 
 ## best fitness plots
-![diagram10](./Diagrams/exp1_best_fitness_plot.png)
+![diagram10](./diagrams/exp1_best_fitness_plot.png)
 
-![diagram11](./Diagrams/exp2_evolve_only_brain.png)
+![diagram11](./diagrams/exp2_evolve_only_brain.png)
 
 ## average fitness plots
 
