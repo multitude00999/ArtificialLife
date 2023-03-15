@@ -33,7 +33,8 @@ class SIMULATION:
 			
 			if self.directOrGUI == "GUI":
 				basePos, baseOrn = p.getBasePositionAndOrientation(self.robot.robotId) # Get model position
-				p.resetDebugVisualizerCamera( cameraDistance = 5, cameraYaw=75, cameraPitch=-20, cameraTargetPosition=basePos) # fix camera onto model
+				# p.resetDebugVisualizerCamera( cameraDistance = 5, cameraYaw=75, cameraPitch=-20, cameraTargetPosition=basePos) # fix camera onto model
+				p.resetDebugVisualizerCamera( cameraDistance = 5, cameraYaw=75, cameraPitch=-50, cameraTargetPosition=basePos)
 				time.sleep(c.waitTime)
 			# if t%100 ==0:
 			# 	print("step:", t)

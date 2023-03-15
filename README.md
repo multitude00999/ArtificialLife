@@ -1,6 +1,132 @@
-# Evolving 3D creature
+# Does body matters or brain is all we need?
 
-Following is a submission for assignment 8 of Artificial life [course](https://www.mccormick.northwestern.edu/mechanical/academics/courses/descriptions/495-artificial-life.html). 
+Following is a submission for final project of Artificial life [course](https://www.mccormick.northwestern.edu/mechanical/academics/courses/descriptions/495-artificial-life.html) taught by [Dr. Sam Kriegman](https://www.mccormick.northwestern.edu/research-faculty/directory/profiles/kriegman-sam.html) at Northwestern University. 
+
+# Teaser Gif
+
+![Teaser](https://github.com/multitude00999/ArtificialLife/blob/3DEvolvingBots/diagrams/teaser_gif.gif?raw=true)
+
+# Summary 2 minute video
+
+<insert youtube video link>
+
+# B-Roll (extra footage of bloopers or interesting creatures)
+
+<insert B - roll youtube video link>
+
+# Motivation
+
+<insert motivation paragraph>
+
+# Hypothesis
+
+## Null hypothesis
+
+```
+For running task only evolving brain is enough i.e there is no need to coevolve brain and body
+```
+
+## Alternative hypothesis
+
+```
+For running task coevolving brain and body is helpful
+```
+
+## Hypothesis testing methodology
+
+<insert description about control group and experiment group>
+For testing the hypothesis an experiment setup is designed. I ran parallel hill climber of population size = 10 for 500 generations 5 times (with random seed each time). This eexperimental setup is run under two condtions. In both of these conditions all parameters are same except body is not evolved in setting 1. While in setting 2 both body and brain are evolved:
+
+1. In first setting Only brain is evolved. This is achieved by setting Body mutation probability to zero and brain mutation probability to 1
+2. Second setting has every other parameter same except that both brain and body can evolve here. This is achieved by setting body mutation probability to non zero values and brain muatation probability to also nonzero.
+
+Note: In second setting body mutation probability and brain mutation probability are initialized such that in starting the body mutation is more probable. In starting Body mutation probability is 1 and brain mutation probability is zero. However as the evolution continues the probability of brain mutation increases to maximum of 0.7 and probability body mutation decreases gradually to minimum of 0.3
+
+
+<insert diagram of how best creatures are created and compared>
+
+# Overview of the environment and creature
+# World 
+
+World is ver simple and non dynamic. The world remains same for each generation of evolution. The world is also kept same under both of the experimentation conditions. World contains only two things (the horizontal plane) and a spherical ball. 
+
+# Creature
+## Body
+
+The creature is made of cubes (links). The size of these links is completely arbitrary and decided by evolution. These links are connected by revolute joint. Any two adjacent links have the revolute joint between them. This revolute joint is later connected to a motor neuron which makes the links move rotate around the joint. 
+<insert creature generation gif>
+<insert phoenotype and genotype diagram>
+<insert diagram of relative position>
+
+## sensors
+
+A link can have a touch sensor. A link is assigned a touch sensor with a probability of 0.5 for initial genotype creation. The touch sensor return a +1 value when in contact with the ground and -1 otherwise. The touch sensor helps the creature in assesing the environment. The touch sensor also helps the creature in having knowledge of it's current state.
+
+<insert green and blue color link>
+
+## Motors
+
+A motor is attched at each of the joint with an axis of rotation depending on the direction which the child link is attached. Maximum motor strength is set to <enter>. 
+
+<insert motor link diagram>
+
+## Brain
+
+Our brain has 3 big components
+1. sensory neuron: retrievs touch sensor values from the corresponding link
+2. motor neuron: responsible for controlling the moror of a joint
+3. synapse: synapse connects a sensor neuron to motor neurons. These are weigh values ranging between [-1,1]
+
+The core part of our brain are the synapse weights. These weights are updated whenever a brain mutation is performed. 
+
+Overall brain of our creature is a fully connected neural network with only 2 layers. The input layer is of sensory neurons. This layer is connected to the motor neuron layer with synapse weights. The network takes touch sensor values as input. The output of the netowrk is fed to the motor neurons which inturn controls the movement of the creature.
+
+## Creature locomotion
+The creature has revolute joints between the links. The robot rotates the link via motor neurons. The link movement in turn moves the whole creature.
+<insert diagram>
+
+<brain connections>
+
+# How Evolution works (Parallel Hill Climber)
+
+<insert fitness>
+<insert evolution flow>
+<how selection works>
+<lineage>
+<mutation example and demonstration>
+
+# results
+
+# fitness plots
+
+<insert average and best fitness plots>
+
+# Discussion
+
+
+
+# Conclusion
+
+# Running the code
+
+## Setup
+
+## Run evolution
+
+## see best creature
+
+## see creature evolving
+
+## Generate graphs
+
+## Reproducibility
+<added random seed for evolution in search.py>
+
+# References
+
+
+
+
 
 
 # flow diagram of how 3D morphologies are created

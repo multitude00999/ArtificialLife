@@ -40,12 +40,13 @@ def read_data(filename):
 		bestCreatureValues[i] *= -1
 
 	return bestCreatureValues
-filelist = os.listdir('./bestFitnessVals')
+rootFolder = './data/exp1/averageFitnessVals/'
+filelist = os.listdir(rootFolder)
 
 i = 0
 for file in filelist:
-	bestCreatureValues = read_data('./bestFitnessVals/' + file)
-	plt.plot(bestCreatureValues, label = "seed " + str(file.split('_')[1].split('.')[0]), linewidth = 3)
+	bestCreatureValues = read_data(rootFolder + file)
+	plt.plot(bestCreatureValues, label = "seed " + str(file.split('_')[-1].split('.')[0]), linewidth = 3)
 	i+=1 
 plt.xlabel('generation')
 plt.ylabel('fitness')

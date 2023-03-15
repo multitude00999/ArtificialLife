@@ -431,7 +431,7 @@ class SOLUTION_AUTO_3D():
 			self.numSensorNeurons += 1
 		self.links.append(par)
 		self.joints.append(joint)
-		print("link added")
+		# print("link added")
 
 	def getAllDanglingLinks(self):
 		result = []
@@ -444,15 +444,17 @@ class SOLUTION_AUTO_3D():
 		for i in range(len(container)):
 			if container[i] == val:
 				return i
-		print("element not found")
+		# print("element not found")
 		return -1
 
 
 	def removeLinkMutation(self):
-		allDanglingLinks = self.getAllDanglingLinks()
-		choosenOne = self.random.choice(allDanglingLinks)
-		ind = self.returnIndexOfElement(self.links, choosenOne)
-		print("link index", ind)
+		# allDanglingLinks = self.getAllDanglingLinks()
+		# choosenOne = self.random.choice(allDanglingLinks)
+		# ind = self.returnIndexOfElement(self.links, choosenOne)
+		ind = len(self.links)-1 # temporary fix for removing link
+		choosenOne = self.links[ind]
+		# print("link index", ind)
 		if self.numSensorNeurons == self.minSensor:
 			# don't remove it
 			if self.keepSensor[ind]:
@@ -465,27 +467,26 @@ class SOLUTION_AUTO_3D():
 		ind_joint = -1
 		for i in range(len(self.joints)):
 			if self.joints[i].childLink == choosenOne.linkName:
-				print("link joint found")
+				# print("link joint found")
 				self.joints.pop(i)
 				ind_joint = i
 				break
 
-		print("before", self.weights.shape)
+		# print("before", self.weights.shape)
 		# remove motor neuron from brain
 		self.weights = np.delete(self.weights, ind_joint, 1)
 		self.numMotorNeurons -= 1
-		print("after 1 ", self.weights.shape)
+		# print("after 1 ", self.weights.shape)
 
 		ind_w = sum(self.keepSensor[:ind]) - 1
-		print(ind_w)
+		# print(ind_w)
 		# if link had sensor remove it from the brain
 		if self.keepSensor[ind]:
 			self.weights = np.delete(self.weights, ind_w, 0)
 			self.numSensorNeurons -=1
 		self.keepSensor.pop(ind)
 
-		print("link removed")
-
+		# print("link removed")
 
 	def Mutate(self, mutateBodyProb, mutateBrainProb):
 		self.mutateBodyProb = mutateBodyProb
@@ -497,19 +498,23 @@ class SOLUTION_AUTO_3D():
 
 			if self.random.random() < self.addLinkProb and self.numLinks < self.maxLinks:
 				self.addLinkMutation()
+				return "link added"
 
-			# elif self.random.random() < self.removeLinkProb and self.numLinks > self.minLinks:
-			# 	self.removeLinkMutation()
+			if self.random.random() < self.removeLinkProb and self.numLinks > self.minLinks:
+				self.removeLinkMutation()
+				return "link removed"
 
 			# randomly add sensor to a link without sensor
 			if self.random.random() < self.addSensorProb:
 				self.addSensorRandom()
-					# print("sensor added")
+				# print("sensor added")
+				return "sensor added"
 
 			# randomly remove sensor from a link with sensor
 			if self.random.random() < self.removeSensorProb:
 				self.removeSensorRandom()
-					# print("sensor removed")
+				# print("sensor removed")
+				return "sensor removed"
 
 
 
@@ -519,4 +524,5 @@ class SOLUTION_AUTO_3D():
 			randomRow = self.random.randint(0,self.weights.shape[0]-1)
 			randomCol = self.random.randint(0,self.weights.shape[1]-1)
 			self.weights[randomRow][randomCol] = random.random()*2 - 1
+			return "brain mutated"
 

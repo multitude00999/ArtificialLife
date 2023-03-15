@@ -8,25 +8,38 @@ import random
 from collections import defaultdict
 
 class PARALLEL_HILL_CLIMBER():
-	def __init__(self, show_random, randomSeed):
+	def __init__(self, show_random, randomSeed, exp_number, run_number):
 		for file in os.listdir("."):
 			if file.startswith("brain") or file.startswith("fitness") or file.startswith("body"):
 				os.system("rm {}".format(file))
 
 		self.parents = {}
+		self.run_number = run_number
+		self.exp_number = exp_number
+		self.mutations = {}
 		self.randomSeed = randomSeed
 		self.showRandom = show_random
 		self.random = random.Random(self.randomSeed)
 		self.nextAvailableID = 0
 		self.best_creature_fitness = []
-		self.bodyMutationRate = 1
-		self.brainMutationRate = 1 - self.bodyMutationRate
+		self.averageFitnessVals = []
+
+		if self.exp_number == 0: # evolve only brain
+			self.bodyMutationRate = 0
+			self.brainMutationRate = 1
+
+		else:
+			self.bodyMutationRate = 1
+			self.brainMutationRate = 1 - self.bodyMutationRate
+
 		self.lineage = {}
+		self.mutations = {}
 		for i in range(c.populationSize):
 			randomSeed = self.random.randrange(1000000)
 			self.parents[i] = SOLUTION_AUTO_3D(self.nextAvailableID, fromScratch = True, randSeed = randomSeed)
 			self.nextAvailableID+=1
 			self.lineage[i] = []
+			self.mutations[i] = []
 			self.lineage[i].append(self.parents[i])
 
 	def Evolve(self):
@@ -37,16 +50,18 @@ class PARALLEL_HILL_CLIMBER():
 		for currentGeneration in range(c.numberOfGenerations):
 			print("====== generation ", currentGeneration , " ================ ")
 			self.Evolve_For_One_Generation()
-			self.bodyMutationRate = 0.9*self.bodyMutationRate
-			self.brainMutationRate = 1 - self.bodyMutationRate
+			if self.bodyMutationRate > 0.3:
+				self.bodyMutationRate = 0.9*self.bodyMutationRate
+				self.brainMutationRate = 1 - self.bodyMutationRate
 
 			self.get_best_creature_fitness()
+			self.get_average_fitness()
 
 	def Evolve_For_One_Generation(self):
 		self.Spawn()
 		self.Mutate()
 		self.Evaluate(self.children, fromScratch = False)
-		self.Print()
+		# self.Print()
 		self.Select()
 		# self.show_random_child()
 
@@ -63,7 +78,8 @@ class PARALLEL_HILL_CLIMBER():
 	def Mutate(self):
 		
 		for child in self.children:
-			self.children[child].Mutate(self.bodyMutationRate, self.brainMutationRate)
+			mutation = self.children[child].Mutate(self.bodyMutationRate, self.brainMutationRate)
+			self.mutations[child].append(mutation)
 
 	def Evaluate(self, solutions, fromScratch):
 		for i in range(c.populationSize):
@@ -79,6 +95,8 @@ class PARALLEL_HILL_CLIMBER():
 			if self.parents[parent].fitness > self.children[parent].fitness:
 				self.parents[parent] = copy.deepcopy(self.children[parent])
 				self.lineage[parent].append(self.parents[parent])
+			else:
+				self.mutations[parent].pop(-1)
 
 	def Show_Best(self):
 		best_parent = 0
@@ -100,8 +118,16 @@ class PARALLEL_HILL_CLIMBER():
 			if best_fitness > self.parents[parent].fitness:
 				best_parent = parent
 				best_fitness = self.parents[parent].fitness
-
 		self.best_creature_fitness.append(best_fitness)
+
+	def get_average_fitness(self):
+		fitness_list = []
+		for parent in self.parents:
+			fitness_list.append(self.parents[parent].fitness)
+		# std = np.std(fitness_list)
+		self.averageFitnessVals.append(sum(fitness_list)/len(fitness_list))
+
+
 
 	def show_random(self):
 		self.parents[0].Start_Simulation("GUI", "1", "1", fromScratch = False)
@@ -114,24 +140,58 @@ class PARALLEL_HILL_CLIMBER():
 
 	def saveCreature(self, i):
 		# with open('./bestCreatures/' + str(self.parents[i].myID) + "_" + str(self.randomSeed) + ".pkl", 'wb') as f:
-		with open('./bestCreatures.pkl', 'wb') as f: # temporary 
+		filename = "./data/exp" + str(self.exp_number) + "/bestCreatures/bestCreatures_run_" + str(self.run_number) + "_seed_" + str(self.randomSeed) + ".pkl"
+		with open(filename, 'wb') as f: # temporary 
 			pickle.dump(self.parents[i], f)
 
-	def saveGeneration(self):
-		with open('./bestCreatures.pkl', 'wb') as f: # temporary 
-			pickle.dump(self.parents[i], f)
+	# def saveGeneration(self):
+	# 	with open('./bestCreatures.pkl', 'wb') as f: # temporary 
+	# 		pickle.dump(self.parents[i], f)
+
 	def saveLineage(self):
-		with open('./lineage.pkl', 'wb') as f: # temporary 
+		filename = "./data/exp" + str(self.exp_number) + "/lineages/lineage_run_" + str(self.run_number) + "_seed_" + str(self.randomSeed) + ".pkl"
+		with open(filename, 'wb') as f: # temporary 
 			pickle.dump(self.lineage, f)
+
+	def saveMutations(self):
+		filename = "./data/exp" + str(self.exp_number) + "/mutations/mutations_run_" + str(self.run_number) + "_seed_"  + str(self.randomSeed) + ".pkl"
+		with open(filename, 'wb') as f: # temporary 
+			pickle.dump(self.mutations, f)
+
+	def saveBestFitnessValues(self):
+		filename = "./data/exp" + str(self.exp_number) + "/bestFitnessVals/bestFitnessVals_run_" + str(self.run_number) + "_seed_" + str(self.randomSeed) + ".pkl"
+		with open(filename , 'wb') as f:
+			pickle.dump(self.best_creature_fitness, f)
+
+	def saveAverageFitnessValues(self):
+		filename = "./data/exp" + str(self.exp_number) + "/averageFitnessVals/averageFitnessVals_run_" + str(self.run_number) + "_seed_"  + str(self.randomSeed) + ".pkl"
+		with open(filename , 'wb') as f:
+			pickle.dump(self.averageFitnessVals, f)
+
+	def saveBestCreatureIndex(self):
+		best_parent = 0
+		best_fitness = float('inf')
+		for parent in self.parents:
+			if best_fitness > self.parents[parent].fitness:
+				best_parent = parent
+				best_fitness = self.parents[parent].fitness
+		filename = "./data/exp" + str(self.exp_number) + "/bestCreatureIndex/bestCreatureIndex_run_" + str(self.run_number) + "_seed_"  + str(self.randomSeed) + ".txt"
+		with open(filename , 'w') as f:
+			f.write(str(best_parent) + " " + str(best_fitness))
+
 
 	def Print(self):
 		for parent in self.parents:
 			print("\nparent fitness:", self.parents[parent].fitness, "child fitness:", self.children[parent].fitness )
 
 	def __del__(self):
-		with open('./bestFitnessVals/bestCreatureFitnessVals_' + str(self.randomSeed) + '.pkl' , 'wb') as f:
-			pickle.dump(self.best_creature_fitness, f)
-		# self.saveLineage()
+		# with open('./bestFitnessVals/bestCreatureFitnessVals_' + str(self.randomSeed) + '.pkl' , 'wb') as f:
+		# 	pickle.dump(self.best_creature_fitness, f)
+		self.saveBestCreatureIndex()
+		self.saveBestFitnessValues()
+		self.saveAverageFitnessValues()
+		self.saveLineage()
+		self.saveMutations()
 		for file in os.listdir("."):
 			if file.startswith("brain") or file.startswith("fitness") or file == "1" or file.startswith("body"):
 				os.system("rm {}".format(file))
