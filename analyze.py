@@ -40,7 +40,7 @@ def read_data(filename):
 		bestCreatureValues[i] *= -1
 
 	return bestCreatureValues
-rootFolder = './data/exp0/bestFitnessVals/'
+rootFolder = './data/exp1/averageFitnessVals/'
 filelist = os.listdir(rootFolder)
 
 i = 0
@@ -50,6 +50,6 @@ for file in filelist:
 	i+=1 
 plt.xlabel('generation')
 plt.ylabel('fitness')
-plt.title('Experiment 2 (evolve only brain)')
+plt.title('Experiment 1 (coevolve brain and body)')
 plt.legend()
 plt.show()

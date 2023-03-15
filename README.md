@@ -137,10 +137,13 @@ The creature has revolute joints between the links. The robot rotates the link v
 
 ## average fitness plots
 
+![diagram10](./diagrams/exp1_average_coevolve.png)
+
+![diagram11](./diagrams/exp2_average_evolve_brain.png)
 
 # Conclusion
 
-We can clearly see from the best fitness plots that coevolving brain and body has a significantly better performance compare to evolving just brain. Hence by proof of evidence, we reject the null hypothesis. So alternate hypothesis "For running task coevolving brain and body is helpful" is proved.
+We can clearly see from the best and average fitness plots that coevolving brain and body has a significantly better performance compare to evolving just brain. Hence by proof of evidence, we reject the null hypothesis. So alternate hypothesis "For running task coevolving brain and body is helpful" is proved.
 
 
 <!-- # Discussion -->
@@ -163,13 +166,13 @@ uncomment top part of view.py and run ```python3 view.py```
 run ```python3 view.py 6```
 
 ## Generate graphs
+run ```python3 analyze.py```
 
 ## Reproducibility
-run ```python3 view.py 6```
+for reproducibility random seed is fixed in the search.py file. To see already evolved creatures run ```python3 view.py 6```
 
 # References
-
-
+Artificial life [course](https://www.mccormick.northwestern.edu/mechanical/academics/courses/descriptions/495-artificial-life.html) taught by [Dr. Sam Kriegman](https://www.mccormick.northwestern.edu/research-faculty/directory/profiles/kriegman-sam.html) at Northwestern University.
 
 The codebase is developed as part of [ludobots course](https://www.reddit.com/r/ludobots/).
 
