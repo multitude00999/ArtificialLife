@@ -18,13 +18,14 @@ Following is a submission for final project of Artificial life [course](https://
 
 In nature it's often seen that creatures coevolve body and brain during evolution. To understand whether coevolution acutally helps i have conducted following experiments. Motivation behind this project is to understand whether coevolving brain and body actually helps. To understand that hypothesis testing is done.
 
-# Task
+# Task for the creature
 
-Task here is to reach as far as possible from the origin (i.e running fast) 
+Task for the creature here is to reach as far as possible from the origin (i.e running fast) 
 
 maximize fitness where fitness = euclidean_distance(robot, origin)
 ```fitness = np.sqrt(x_robot**2 + y_robot**2 + z_robot**2)```
 
+![fitness_calc](./diagrams/ftiness_calculation.png)
 
 # Hypothesis
 
@@ -50,8 +51,6 @@ For testing the hypothesis an experiment setup is designed. I ran parallel hill 
 Note: In second setting body mutation probability and brain mutation probability are initialized such that in starting the body mutation is more probable. In starting Body mutation probability is 1 and brain mutation probability is zero. However as the evolution continues the probability of brain mutation increases to maximum of 0.7 and probability body mutation decreases gradually to minimum of 0.3
 
 
-<insert diagram of how best creatures are created and compared>
-
 # Overview of the environment and creature
 # World 
 
@@ -61,13 +60,18 @@ World is ver simple and non dynamic. The world remains same for each generation 
 ## Body
 
 The creature is made of cubes (links). The size of these links is completely arbitrary and decided by evolution. These links are connected by revolute joint. Any two adjacent links have the revolute joint between them. This revolute joint is later connected to a motor neuron which makes the links move rotate around the joint. 
+
+It cab seen below how a rabdom 3D creature is created for initial genotype
 ![flow](https://github.com/multitude00999/ArtificialLife/blob/3DEvolvingBots/diagrams/randomBodyGenerationFinal.gif?raw=true)
 
-### flow diagram of how 3D morphologies are created
-![flow2](./random_3d_morphology.png)
+<!-- ### flow diagram of how 3D morphologies are created
+![flow2](./random_3d_morphology.png) -->
 <!-- <insert phoenotype and genotype diagram>
 <insert diagram of relative position> -->
 
+## Genotype and phenotype representation
+Here i've used direct encoding for genotype. Since we're randomly attaching links we can represent by asingle recursive arrow. This genotype encoding results in the phenotype on right.
+![genotype_and_phenotype](./diagrams/genotype_and_phenotype.png)
 
 
 ## sensors
@@ -75,12 +79,17 @@ The creature is made of cubes (links). The size of these links is completely arb
 A link can have a touch sensor. A link is assigned a touch sensor with a probability of 0.5 for initial genotype creation. The touch sensor return a +1 value when in contact with the ground and -1 otherwise. The touch sensor helps the creature in assesing the environment. The touch sensor also helps the creature in having knowledge of it's current state.
 
 <!-- <insert green and blue color link> -->
+Following color convention is used to mark a link with/without sensor
+![green_blue](./diagrams/link_with_and_without_sensor.png)
+
 
 ## Motors
 
 A motor is attched at each of the joint with an axis of rotation depending on the direction which the child link is attached. Maximum motor strength is set to <enter>. 
 
 <!-- <insert motor link diagram> -->
+Shown below is how a revolute joint is attached
+![motor_joint](./diagrams/motor_joint.png)
 
 ## Brain
 
@@ -89,20 +98,20 @@ Our brain has 3 big components
 2. motor neuron: responsible for controlling the moror of a joint
 3. synapse: synapse connects a sensor neuron to motor neurons. These are weigh values ranging between [-1,1]
 
+
+
 The core part of our brain are the synapse weights. These weights are updated whenever a brain mutation is performed. 
 
 Overall brain of our creature is a fully connected neural network with only 2 layers. The input layer is of sensory neurons. This layer is connected to the motor neuron layer with synapse weights. The network takes touch sensor values as input. The output of the netowrk is fed to the motor neurons which inturn controls the movement of the creature.
 
-### flow diagram of brain for 3 sensor nueuron and 2 motor neuron
 
-![flow](./SensorMotorNeuronConnection.png)
+### sample brain of 2 sensor nueuron and 3 motor neurons
+
+![sample_brain](./diagrams/sample_brain.png)
 
 
 ## Creature locomotion
 The creature has revolute joints between the links. The robot rotates the link via motor neurons. The link movement in turn moves the whole creature.
-<!-- <insert diagram>
-
-<brain connections> -->
 
 # How Evolution works (Parallel Hill Climber)
 
@@ -174,9 +183,9 @@ for reproducibility random seed is fixed in the search.py file. To see already e
 # References
 Artificial life [course](https://www.mccormick.northwestern.edu/mechanical/academics/courses/descriptions/495-artificial-life.html) taught by [Dr. Sam Kriegman](https://www.mccormick.northwestern.edu/research-faculty/directory/profiles/kriegman-sam.html) at Northwestern University.
 
-The codebase is developed as part of [ludobots course](https://www.reddit.com/r/ludobots/).
+The codebase is developed as part of [ludobots course](https://www.reddit.com/r/ludobots/) taught by .
 
-Simulation is built using Pyrosim [git](https://github.com/jbongard/pyrosim).
+Simulation is built on top of Pyrosim [git](https://github.com/jbongard/pyrosim).
 
 
 
