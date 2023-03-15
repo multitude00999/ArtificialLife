@@ -81,7 +81,7 @@ Following color convention is used to mark a link with/without sensor
 
 ## Motors
 
-A motor is attched at each of the joint with an axis of rotation depending on the direction which the child link is attached. Maximum motor strength is set to <enter>. 
+A motor is attched at each of the joint with an axis of rotation depending on the direction which the child link is attached. Maximum motor strength is set to 30. 
 
 <!-- <insert motor link diagram> -->
 Shown below is how a revolute joint is attached
@@ -116,10 +116,12 @@ Parallel hill climbing (PHC) is used for evolving the creatures gradually. Paral
 ![phc_flow](./diagrams/parallel_hill_climber.png)
 
 PHC has following steps:
-* Evaluate
+* **Evaluate**
+
 During this step each of the creature is simulated and the fitness score is calculated. The fitness score is assigned to the respective creature. The fitness score denotes how good the creature is for the task in hand.
 
-* Spawn
+* **Spawn**
+
 During this step copies of the parent are created. These copies are also known as children.
 
 * Mutate
