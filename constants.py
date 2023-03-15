@@ -1,6 +1,6 @@
 import numpy as np
 
-numSteps = 3000
+numSteps = 5000
 waitTime = 1/1000
 amplitude, frequency, offset = np.pi/4, 10, 0 
 numberOfGenerations = 500

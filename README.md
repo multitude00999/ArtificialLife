@@ -10,9 +10,9 @@ Following is a submission for final project of Artificial life [course](https://
 
 [Youtube video](https://youtu.be/m7cQinZQo4g)
 
-# B-Roll (extra footage of bloopers or interesting creatures)
+# B-Roll (extra footage of interesting creatures)
 
-<insert B - roll youtube video link>
+[B-Roll](https://youtu.be/ys-sDrql9b8)
 
 # Motivation
 
@@ -172,6 +172,18 @@ It is illustrated below
 
 We can clearly see from the best and average fitness plots that coevolving brain and body has a significantly better performance compare to evolving just brain. Hence by proof of evidence, we reject the null hypothesis. So alternate hypothesis "For running task coevolving brain and body is helpful" is proved.
 
+Further from the average fitness plots we can see that the difference his huge between the two experiments.
+One of the reasons for this approach can be following:
+When we're only evolving brain, then the creature's abilities are limited to the body it started with. The creature can't change body so it'll try to achieve highest fitness as possible by changing synapse weight. However when we're evolving both body and brains, creature have more freedom in terms of possible mutaions. Hence it has lower chances of getting stuck.
+
+Another observation from the plots is that the evolution with only brain gets saturated very quickly (around 200 generations), however in coevolution of brain and body, we're still seeing improvements in fitness till 500 generations.
+This also becomes another advantage of coevolution over only brain evolution. 
+
+
+
+# Future Work
+
+If i had more time, i would like to simulate running in terrain. This will make this task more challenging.
 
 <!-- # Discussion -->
 
@@ -201,7 +213,7 @@ Run ```python3 viewBestCreature.py```
 
 ## see creature evolving (Evolution history)
 
-Run ```python3 viewLineage.py 6```
+Run ```python3 viewLineage.py```
 
 ## Generate graphs
 Run ```python3 analyze.py```
@@ -212,7 +224,7 @@ For reproducibility random seed is fixed in the search.py file. This makes sure 
 # References
 Artificial life [course](https://www.mccormick.northwestern.edu/mechanical/academics/courses/descriptions/495-artificial-life.html) taught by [Dr. Sam Kriegman](https://www.mccormick.northwestern.edu/research-faculty/directory/profiles/kriegman-sam.html) at Northwestern University.
 
-The codebase is developed as part of [ludobots course](https://www.reddit.com/r/ludobots/) taught by .
+The codebase is developed as part of [ludobots course](https://www.reddit.com/r/ludobots/) taught by Dr. Josh Bongard.
 
 Simulation is built on top of Pyrosim [git](https://github.com/jbongard/pyrosim).
 

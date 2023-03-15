@@ -61,7 +61,7 @@ class PARALLEL_HILL_CLIMBER():
 		self.Spawn()
 		self.Mutate()
 		self.Evaluate(self.children, fromScratch = False)
-		# self.Print()
+		self.Print()
 		self.Select()
 		# self.show_random_child()
 
