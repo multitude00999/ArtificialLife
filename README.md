@@ -8,7 +8,7 @@ Following is a submission for final project of Artificial life [course](https://
 
 # Summary 2 minute video
 
-<insert youtube video link>
+[Youtube video](https://youtu.be/m7cQinZQo4g)
 
 # B-Roll (extra footage of bloopers or interesting creatures)
 
@@ -16,7 +16,7 @@ Following is a submission for final project of Artificial life [course](https://
 
 # Motivation
 
-<insert motivation paragraph>
+In nature it's often seen that creatures coevolve body and brain during evolution. To understand whether coevolution acutally helps i have conducted following experiments. Motivation behind this project is to understand whether coevolving brain and body actually helps. To understand that hypothesis testing is done.
 
 # Hypothesis
 
@@ -34,7 +34,6 @@ For running task coevolving brain and body is helpful
 
 ## Hypothesis testing methodology
 
-<insert description about control group and experiment group>
 For testing the hypothesis an experiment setup is designed. I ran parallel hill climber of population size = 10 for 500 generations 5 times (with random seed each time). This eexperimental setup is run under two condtions. In both of these conditions all parameters are same except body is not evolved in setting 1. While in setting 2 both body and brain are evolved:
 
 1. In first setting Only brain is evolved. This is achieved by setting Body mutation probability to zero and brain mutation probability to 1
@@ -54,7 +53,7 @@ World is ver simple and non dynamic. The world remains same for each generation 
 ## Body
 
 The creature is made of cubes (links). The size of these links is completely arbitrary and decided by evolution. These links are connected by revolute joint. Any two adjacent links have the revolute joint between them. This revolute joint is later connected to a motor neuron which makes the links move rotate around the joint. 
-<insert creature generation gif>
+![Teaser](https://github.com/multitude00999/ArtificialLife/blob/3DEvolvingBots/diagrams/randomBodyGenerationFinal.gif?raw=true)
 <insert phoenotype and genotype diagram>
 <insert diagram of relative position>
 
