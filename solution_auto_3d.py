@@ -97,6 +97,9 @@ class SOLUTION_AUTO_3D():
 
 		with open(fitnessFile, 'r') as f:
 			self.fitness = float(f.readlines()[0])
+			# normalize by length
+			self.length = self.getCreatureLength()
+			self.fitness /= self.length
 
 		os.system("rm " + fitnessFile)
 		
@@ -487,6 +490,31 @@ class SOLUTION_AUTO_3D():
 		self.keepSensor.pop(ind)
 
 		# print("link removed")
+	
+	def getCreatureLength(self):
+
+		# get end points in x, y and z dir
+		x_max, y_max, z_max = -float('inf')
+		x_min, y_min, z_min = float('inf')
+		for link in self.links:
+			x, y, z = link.globalPos[0], link.globalPos[1], link.globalPos[2]
+			x_max = max(x_max, x)
+			y_max = max(y_max, y)
+			z_max = max(z_max, z)
+
+			x_min = min(x_min, x)
+			y_min = min(y_min, y)
+			z_min = min(z_min, z)
+
+		x_len = x_max - x_min
+		y_len = y_max - y_min
+		z_len = z_max - z_min
+
+		return max(x_len, y_len, z_len)
+
+
+
+
 
 	def Mutate(self, mutateBodyProb, mutateBrainProb):
 		self.mutateBodyProb = mutateBodyProb

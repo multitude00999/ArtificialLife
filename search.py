@@ -4,21 +4,22 @@ import time
 import random
 
 
-numRuns = 5
+numRuns = 10
 # exp_number = 0 # evolve only brain
 exp_number = 0 # coevolve both brain and body
 show_random = True
-show_best = False
+show_best = True
 # fix seed for reproducibiltiy
-# random = random.Random(123456789)
-rand_seed_list = [672557, 835812, 213623, 456231, 224567]
+random = random.Random(123456789)
+# rand_seed_list = [672557, 835812, 213623, 456231, 224567] random seeds for final project submission
+
 
 for i in range(numRuns):
 	print("\n\n\n ====== run " + str(i) + " =========== \n \n")
 
 	t1 = time.time()
-	# rand_seed = random.randrange(1000000)
-	rand_seed = rand_seed_list[i]
+	rand_seed = random.randrange(1000000)
+	# rand_seed = rand_seed_list[i]
 	# if i <3:
 	# 	print(rand_seed)
 	# 	continue
