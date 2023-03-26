@@ -9,7 +9,7 @@ import sys
 
 
 # display best creature
-with open('./data/exp1/bestCreatures/bestCreatures_run_4_seed_224567.pkl', 'rb') as f:
+with open('./data/exp1/bestCreatures/bestCreatures_run_7_seed_851164.pkl', 'rb') as f:
 	bestCreature = pickle.load(f)
 
 bestCreature.Start_Simulation("GUI", "1", "1", fromScratch = False)

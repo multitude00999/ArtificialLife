@@ -494,8 +494,8 @@ class SOLUTION_AUTO_3D():
 	def getCreatureLength(self):
 
 		# get end points in x, y and z dir
-		x_max, y_max, z_max = -float('inf')
-		x_min, y_min, z_min = float('inf')
+		x_max, y_max, z_max = -float('inf'), -float('inf'), -float('inf')
+		x_min, y_min, z_min = float('inf'), float('inf'), float('inf')
 		for link in self.links:
 			x, y, z = link.globalPos[0], link.globalPos[1], link.globalPos[2]
 			x_max = max(x_max, x)

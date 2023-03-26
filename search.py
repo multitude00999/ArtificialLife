@@ -6,7 +6,7 @@ import random
 
 numRuns = 10
 # exp_number = 0 # evolve only brain
-exp_number = 0 # coevolve both brain and body
+exp_number = 1 # coevolve both brain and body
 show_random = True
 show_best = True
 # fix seed for reproducibiltiy

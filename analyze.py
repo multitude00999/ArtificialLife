@@ -1,5 +1,6 @@
 import numpy as np
 from matplotlib import pyplot as plt
+import matplotlib.patches as mpatches
 import pickle
 import os
 # backLegSensorValues = np.load('data/backLegSensorValues.npy')
@@ -40,7 +41,7 @@ def read_data(filename):
 		bestCreatureValues[i] *= -1
 
 	return bestCreatureValues
-rootFolder = './data/exp1/averageFitnessVals/'
+rootFolder = './data/exp1/bestFitnessVals/'
 filelist = os.listdir(rootFolder)
 
 i = 0
@@ -48,8 +49,22 @@ for file in filelist:
 	bestCreatureValues = read_data(rootFolder + file)
 	plt.plot(bestCreatureValues, label = "seed " + str(file.split('_')[-1].split('.')[0]), linewidth = 3)
 	i+=1 
+
+rootFolder2 = './data/exp0/bestFitnessVals/'
+filelist2 = os.listdir(rootFolder2)
+
+# i = 0
+# for file in filelist2:
+# 	bestCreatureValues = read_data(rootFolder2 + file)
+# 	plt.plot(bestCreatureValues, label = "seed " + str(file.split('_')[-1].split('.')[0]), linewidth = 3)
+# 	i+=1 
+
+# red_patch = mpatches.Patch(color='orange', label='coevolution')
+# blue_patch = mpatches.Patch(color='blue', label='only brain')
+
+# plt.legend(handles=[red_patch, blue_patch])
 plt.xlabel('generation')
-plt.ylabel('fitness')
-plt.title('Experiment 1 (coevolve brain and body)')
+plt.ylabel('fitness/(body length)')
+plt.title('Co-evolution vs Only brain')
 plt.legend()
 plt.show()
