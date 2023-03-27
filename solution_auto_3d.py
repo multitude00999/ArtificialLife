@@ -9,9 +9,10 @@ from link import LINK
 from joint import CREATURE_JOINT
 
 class SOLUTION_AUTO_3D():
-	def __init__(self, myID, fromScratch, randSeed):
+	def __init__(self, myID, fromScratch, randSeed, useHiddenNeurons):
 		self.random = random.Random(randSeed)
 		self.fromScratch = fromScratch
+		self.useHiddenNeurons = useHiddenNeurons
 		if fromScratch:
 			self.minLinks = 3
 			self.maxLinks = 5
@@ -33,8 +34,18 @@ class SOLUTION_AUTO_3D():
 			np.random.seed(randSeed)
 
 			# initialize brain weights
-			self.weights = np.random.rand(self.numSensorNeurons, self.numMotorNeurons)
-			self.weights = self.weights*2 - 1
+			if not self.useHiddenNeurons:
+				self.weights = np.random.rand(self.numSensorNeurons, self.numMotorNeurons)
+				self.weights = self.weights*2 - 1
+
+			else:
+				self.weightsIH = np.random.rand(self.numSensorNeurons, self.numSensorNeurons)
+				self.weightsIH = self.weightsIH*2 - 1
+
+				self.weightsHO = np.random.rand(self.numSensorNeurons, self.numMotorNeurons)
+				self.weightsHO = self.weightsHO*2 - 1
+
+
 
 			# unique solution Id
 			self.myID = myID
@@ -87,8 +98,8 @@ class SOLUTION_AUTO_3D():
 		self.Generate_Body(fromScratch)
 		self.Generate_Brain()
 		# exit()
-		os.system("python3 simulate.py " + mode +  " " + str(self.myID) + " " + str(deleteBrain) +" "+ str(deleteBody) + " " "2&>1" + " &")
-		# os.system("python3 simulate.py " + mode +  " " + str(self.myID) + " &")
+		os.system("python3 simulate.py " + mode +  " " + str(self.myID) + " " + str(deleteBrain) +" "+ str(deleteBody) + " " + "2&>1" + " &")
+		# os.system("python3 simulate.py " + mode +  " " + str(self.myID) + " " + str(deleteBrain) +" "+ str(deleteBody) + " &")
 
 	def Wait_For_Simulation_To_End(self):
 		fitnessFile = "fitness" + str(self.myID) + ".txt"
@@ -351,89 +362,216 @@ class SOLUTION_AUTO_3D():
 	def Generate_Brain(self):
 		pyrosim.Start_NeuralNetwork("brain" + str(self.myID) + ".nndf")
 
+		if not self.useHiddenNeurons:
+			cnt = 0
+			for i in range(len(self.links)):
+				if self.keepSensor[i] == 1:
+					pyrosim.Send_Sensor_Neuron(name = cnt , linkName = str(i))
+					cnt+=1
+			self.numMotorNeurons = self.numLinks - 1
+			for i in range(self.numMotorNeurons):
+				pyrosim.Send_Motor_Neuron( name = i + self.numSensorNeurons, jointName = self.joints[i].parentLink + "_" + self.joints[i].childLink)
 
-		cnt = 0
-		for i in range(len(self.links)):
-			if self.keepSensor[i] == 1:
-				pyrosim.Send_Sensor_Neuron(name = cnt , linkName = str(i))
-				cnt+=1
-		self.numMotorNeurons = self.numLinks - 1
-		for i in range(self.numMotorNeurons):
-			pyrosim.Send_Motor_Neuron( name = i + self.numSensorNeurons, jointName = self.joints[i].parentLink + "_" + self.joints[i].childLink)
+			for currentRow in range(self.numSensorNeurons):
+				for currentCol in range(self.numMotorNeurons):
+					pyrosim.Send_Synapse( sourceNeuronName = currentRow , targetNeuronName = currentCol+self.numSensorNeurons , weight = self.weights[currentRow][currentCol])
+			
+			pyrosim.End()
+			while not os.path.exists("brain" + str(self.myID) + ".nndf"):
+				time.sleep(0.01)
 
-		for currentRow in range(self.numSensorNeurons):
-			for currentCol in range(self.numMotorNeurons):
-				pyrosim.Send_Synapse( sourceNeuronName = currentRow , targetNeuronName = currentCol+self.numSensorNeurons , weight = self.weights[currentRow][currentCol])
-		
-		pyrosim.End()
-		while not os.path.exists("brain" + str(self.myID) + ".nndf"):
-			time.sleep(0.01)
+		else:
+			# generate sensory neurons
+			cnt = 0
+			for i in range(len(self.links)):
+				if self.keepSensor[i] == 1:
+					pyrosim.Send_Sensor_Neuron(name = cnt , linkName = str(i))
+					cnt+=1
+			self.numMotorNeurons = self.numLinks - 1
+
+			# generate hidden neurons
+			for i in range(len(self.links)):
+				if self.keepSensor[i] == 1:
+					pyrosim.Send_Hidden_Neuron(name = cnt)
+					cnt+=1
+
+			# generate motor neurons
+			for i in range(self.numMotorNeurons):
+				pyrosim.Send_Motor_Neuron( name = i + 2*self.numSensorNeurons, jointName = self.joints[i].parentLink + "_" + self.joints[i].childLink)
+
+			# initialize sensor x hidden neuron matrix
+			for currentRow in range(self.numSensorNeurons):
+				for currentCol in range(self.numSensorNeurons):
+					pyrosim.Send_Synapse( sourceNeuronName = currentRow , targetNeuronName = currentCol+self.numSensorNeurons , weight = self.weightsIH[currentRow][currentCol])
+			# print(self.weightsHO.shape)
+			# print(self.numSensorNeurons)
+			# print(self.numMotorNeurons)
+			# initialize hidden x motor neuron matrix
+			for currentRow in range(self.numSensorNeurons):
+				for currentCol in range(self.numMotorNeurons):
+					pyrosim.Send_Synapse( sourceNeuronName = currentRow + self.numSensorNeurons, targetNeuronName = currentCol+ 2*self.numSensorNeurons , weight = self.weightsHO[currentRow][currentCol])
+			
+			pyrosim.End()
+			while not os.path.exists("brain" + str(self.myID) + ".nndf"):
+				time.sleep(0.01)
 
 
 	def addSensorRandom(self):
-		noSensorInd = []
-		for i in range(len(self.keepSensor)):
-			if self.keepSensor[i] == 0:
-				noSensorInd.append(i)
-		if len(noSensorInd) == 0:
-			return False
-		randInd = self.random.choices(noSensorInd)[0]
-		# print(randInd)
-		self.keepSensor[randInd] = 1
-		
-		newWeights = np.random.rand(self.numSensorNeurons + 1, self.numMotorNeurons)
-		newWeights[:self.numSensorNeurons, :] = self.weights
-		newWeights[self.numSensorNeurons:] = np.random.rand(1, self.numMotorNeurons)
-		self.weights = newWeights
-		self.numSensorNeurons += 1
-		return True
-		
-	def removeSensorRandom(self):
-		hasSensorInd = []
-		for i in range(len(self.keepSensor)):
-			if self.keepSensor[i] == 1:
-				hasSensorInd.append(i)
-
-		if len(hasSensorInd) < 2 : # do not remove sensor if there are less than 2 sensors
-			return False
-		randInd = self.random.choices(hasSensorInd)[0]
-		# print(randInd)
-		self.keepSensor[randInd] = 0
-		
-		newWeights = np.random.rand(self.numSensorNeurons - 1, self.numMotorNeurons)
-		newWeights = self.weights[:self.numSensorNeurons-1, :]
-		self.weights = newWeights
-		self.numSensorNeurons -= 1
-		return True
-
-	def addLinkMutation(self):
-		self.numLinks += 1
-		i = self.numLinks - 1
-		joint, parent_cube_idx, rand_face = self.addJoint(i)
-		par = self.addLink(i, joint, rand_face, parent_cube_idx)
-			# print("rand face", rand_face)
-		while self.checkOverlap(par):
-			joint, parent_cube_idx, rand_face = self.addJoint(i)
-			par = self.addLink(i, joint, rand_face, parent_cube_idx)
-
-		self.links[parent_cube_idx].isDangling = False
-
-		newWeights = np.random.rand(self.numSensorNeurons, self.numMotorNeurons + 1)
-		newWeights[:, :self.numMotorNeurons] = self.weights
-		newWeights[:, self.numMotorNeurons:] = np.random.rand(self.numSensorNeurons, 1)
-		self.weights = newWeights
-		self.numMotorNeurons += 1
-
-		self.keepSensor.append(self.random.randint(0,1))			
-		if self.keepSensor[i]:
-			par.setColor("Green", "0 1.0 0 1.0")
+		if not self.useHiddenNeurons:
+			noSensorInd = []
+			for i in range(len(self.keepSensor)):
+				if self.keepSensor[i] == 0:
+					noSensorInd.append(i)
+			if len(noSensorInd) == 0:
+				return False
+			randInd = self.random.choices(noSensorInd)[0]
+			# print(randInd)
+			self.keepSensor[randInd] = 1
+			
 			newWeights = np.random.rand(self.numSensorNeurons + 1, self.numMotorNeurons)
 			newWeights[:self.numSensorNeurons, :] = self.weights
 			newWeights[self.numSensorNeurons:] = np.random.rand(1, self.numMotorNeurons)
 			self.weights = newWeights
 			self.numSensorNeurons += 1
-		self.links.append(par)
-		self.joints.append(joint)
+
+
+			return True
+
+		else:
+			noSensorInd = []
+			for i in range(len(self.keepSensor)):
+				if self.keepSensor[i] == 0:
+					noSensorInd.append(i)
+			if len(noSensorInd) == 0:
+				return False
+			randInd = self.random.choices(noSensorInd)[0]
+			# print(randInd)
+			self.keepSensor[randInd] = 1
+			
+			newWeights = np.random.rand(self.numSensorNeurons + 1, self.numMotorNeurons)
+			newWeights[:self.numSensorNeurons, :] = self.weightsHO[:self.numSensorNeurons, :]
+			newWeights[self.numSensorNeurons:] = np.random.rand(1, self.numMotorNeurons)
+			self.weightsHO = newWeights
+
+			newWeights = np.random.rand(self.numSensorNeurons + 1, self.numSensorNeurons + 1)
+			newWeights[:self.numSensorNeurons, :self.numSensorNeurons] = self.weightsIH[:self.numSensorNeurons, :self.numSensorNeurons]
+			newWeights[self.numSensorNeurons:] = np.random.rand(1, self.numSensorNeurons+1)
+			newWeights[:, self.numSensorNeurons:] = np.random.rand(1, self.numSensorNeurons+1).reshape(-1,1)
+
+			self.weightsIH = newWeights
+
+
+			self.numSensorNeurons += 1
+			return True
+
+		
+	def removeSensorRandom(self):
+		if not self.useHiddenNeurons:
+			hasSensorInd = []
+			for i in range(len(self.keepSensor)):
+				if self.keepSensor[i] == 1:
+					hasSensorInd.append(i)
+
+			if len(hasSensorInd) < 2 : # do not remove sensor if there are less than 2 sensors
+				return False
+			randInd = self.random.choices(hasSensorInd)[0]
+			# print(randInd)
+			self.keepSensor[randInd] = 0
+			
+			newWeights = np.random.rand(self.numSensorNeurons - 1, self.numMotorNeurons)
+			newWeights = self.weights[:self.numSensorNeurons-1, :]
+			self.weights = newWeights
+			self.numSensorNeurons -= 1
+			return True
+
+		else:
+			hasSensorInd = []
+			for i in range(len(self.keepSensor)):
+				if self.keepSensor[i] == 1:
+					hasSensorInd.append(i)
+
+			if len(hasSensorInd) < 2 : # do not remove sensor if there are less than 2 sensors
+				return False
+			randInd = self.random.choices(hasSensorInd)[0]
+			# print(randInd)
+			self.keepSensor[randInd] = 0
+			
+			newWeights = np.random.rand(self.numSensorNeurons - 1, self.numMotorNeurons)
+			newWeights = self.weightsHO[:self.numSensorNeurons-1, :]
+			self.weightsHO = newWeights
+
+			newWeights = np.random.rand(self.numSensorNeurons - 1, self.numSensorNeurons - 1)
+			newWeights = self.weightsIH[:self.numSensorNeurons-1, :self.numSensorNeurons-1]
+			self.weightsIH = newWeights
+
+			self.numSensorNeurons -= 1
+			return True
+
+	def addLinkMutation(self):
+		if not self.useHiddenNeurons:
+			self.numLinks += 1
+			i = self.numLinks - 1
+			joint, parent_cube_idx, rand_face = self.addJoint(i)
+			par = self.addLink(i, joint, rand_face, parent_cube_idx)
+				# print("rand face", rand_face)
+			while self.checkOverlap(par):
+				joint, parent_cube_idx, rand_face = self.addJoint(i)
+				par = self.addLink(i, joint, rand_face, parent_cube_idx)
+
+			self.links[parent_cube_idx].isDangling = False
+
+			newWeights = np.random.rand(self.numSensorNeurons, self.numMotorNeurons + 1)
+			newWeights[:, :self.numMotorNeurons] = self.weights
+			newWeights[:, self.numMotorNeurons:] = np.random.rand(self.numSensorNeurons, 1)
+			self.weights = newWeights
+			self.numMotorNeurons += 1
+
+			self.keepSensor.append(self.random.randint(0,1))			
+			if self.keepSensor[i]:
+				par.setColor("Green", "0 1.0 0 1.0")
+				newWeights = np.random.rand(self.numSensorNeurons + 1, self.numMotorNeurons)
+				newWeights[:self.numSensorNeurons, :] = self.weights
+				newWeights[self.numSensorNeurons:] = np.random.rand(1, self.numMotorNeurons)
+				self.weights = newWeights
+				self.numSensorNeurons += 1
+			self.links.append(par)
+			self.joints.append(joint)
+
+		else:
+			self.numLinks += 1
+			i = self.numLinks - 1
+			joint, parent_cube_idx, rand_face = self.addJoint(i)
+			par = self.addLink(i, joint, rand_face, parent_cube_idx)
+				# print("rand face", rand_face)
+			while self.checkOverlap(par):
+				joint, parent_cube_idx, rand_face = self.addJoint(i)
+				par = self.addLink(i, joint, rand_face, parent_cube_idx)
+
+			self.links[parent_cube_idx].isDangling = False
+
+			
+
+			self.keepSensor.append(self.random.randint(0,1))			
+			if self.keepSensor[i]:
+				par.setColor("Green", "0 1.0 0 1.0")
+				newWeights = np.random.rand(self.numSensorNeurons + 1, self.numSensorNeurons + 1)
+				newWeights[:self.numSensorNeurons, :self.numSensorNeurons] = self.weightsIH[:self.numSensorNeurons, :self.numSensorNeurons] 
+				newWeights[self.numSensorNeurons:] = np.random.rand(1, self.numSensorNeurons+1)
+				newWeights[:, self.numSensorNeurons:] = np.random.rand(1, self.numSensorNeurons+1).reshape(-1,1)
+
+				self.weightsIH = newWeights
+				self.numSensorNeurons += 1
+
+			newWeights = np.random.rand(self.numSensorNeurons, self.numMotorNeurons + 1)
+			# print(newWeights.shape, self.weightsHO.shape)
+			newWeights[:self.numSensorNeurons-1, :self.numMotorNeurons] = self.weightsHO[:self.numSensorNeurons-1, :self.numMotorNeurons]
+			newWeights[:, self.numMotorNeurons:] = np.random.rand(self.numSensorNeurons, 1)
+			newWeights[self.numSensorNeurons:, :] = np.random.rand(self.numMotorNeurons+1, 1).reshape(1,-1)
+			self.weightsHO = newWeights
+			self.numMotorNeurons += 1
+
+			self.links.append(par)
+			self.joints.append(joint)
 		# print("link added")
 
 	def getAllDanglingLinks(self):
@@ -455,39 +593,75 @@ class SOLUTION_AUTO_3D():
 		# allDanglingLinks = self.getAllDanglingLinks()
 		# choosenOne = self.random.choice(allDanglingLinks)
 		# ind = self.returnIndexOfElement(self.links, choosenOne)
-		ind = len(self.links)-1 # temporary fix for removing link
-		choosenOne = self.links[ind]
-		# print("link index", ind)
-		if self.numSensorNeurons == self.minSensor:
-			# don't remove it
+
+		if not self.useHiddenNeurons:
+			ind = len(self.links)-1 # temporary fix for removing link
+			choosenOne = self.links[ind]
+			# print("link index", ind)
+			if self.numSensorNeurons == self.minSensor:
+				# don't remove it
+				if self.keepSensor[ind]:
+					return
+			# remove link
+			self.links.pop(ind)
+			self.numLinks -=1
+
+			# remove joint with the link as child
+			ind_joint = -1
+			for i in range(len(self.joints)):
+				if self.joints[i].childLink == choosenOne.linkName:
+					# print("link joint found")
+					self.joints.pop(i)
+					ind_joint = i
+					break
+
+			# print("before", self.weights.shape)
+			# remove motor neuron from brain
+			self.weights = np.delete(self.weights, ind_joint, 1)
+			self.numMotorNeurons -= 1
+			# print("after 1 ", self.weights.shape)
+
+			ind_w = sum(self.keepSensor[:ind]) - 1
+			# print(ind_w)
+			# if link had sensor remove it from the brain
 			if self.keepSensor[ind]:
-				return
-		# remove link
-		self.links.pop(ind)
-		self.numLinks -=1
+				self.weights = np.delete(self.weights, ind_w, 0)
+				self.numSensorNeurons -=1
+			self.keepSensor.pop(ind)
+		else:
+			ind = len(self.links)-1 # temporary fix for removing link
+			choosenOne = self.links[ind]
+			# print("link index", ind)
+			if self.numSensorNeurons == self.minSensor:
+				# don't remove it
+				if self.keepSensor[ind]:
+					return
+			# remove link
+			self.links.pop(ind)
+			self.numLinks -=1
 
-		# remove joint with the link as child
-		ind_joint = -1
-		for i in range(len(self.joints)):
-			if self.joints[i].childLink == choosenOne.linkName:
-				# print("link joint found")
-				self.joints.pop(i)
-				ind_joint = i
-				break
+			# remove joint with the link as child
+			ind_joint = -1
+			for i in range(len(self.joints)):
+				if self.joints[i].childLink == choosenOne.linkName:
+					# print("link joint found")
+					self.joints.pop(i)
+					ind_joint = i
+					break
 
-		# print("before", self.weights.shape)
-		# remove motor neuron from brain
-		self.weights = np.delete(self.weights, ind_joint, 1)
-		self.numMotorNeurons -= 1
-		# print("after 1 ", self.weights.shape)
+			# print("before", self.weights.shape)
+			# remove motor neuron from brain
+			self.weightsHO = np.delete(self.weightsHO, ind_joint, 1)
+			self.numMotorNeurons -= 1
+			# print("after 1 ", self.weights.shape)
 
-		ind_w = sum(self.keepSensor[:ind]) - 1
-		# print(ind_w)
-		# if link had sensor remove it from the brain
-		if self.keepSensor[ind]:
-			self.weights = np.delete(self.weights, ind_w, 0)
-			self.numSensorNeurons -=1
-		self.keepSensor.pop(ind)
+			ind_w = sum(self.keepSensor[:ind]) - 1
+			# print(ind_w)
+			# if link had sensor remove it from the brain
+			if self.keepSensor[ind]:
+				self.weightsIH = np.delete(self.weightsIH, ind_w, 0)
+				self.numSensorNeurons -=1
+			self.keepSensor.pop(ind)
 
 		# print("link removed")
 	
@@ -526,10 +700,12 @@ class SOLUTION_AUTO_3D():
 
 			if self.random.random() < self.addLinkProb and self.numLinks < self.maxLinks:
 				self.addLinkMutation()
+				# print("link added")
 				return "link added"
 
 			if self.random.random() < self.removeLinkProb and self.numLinks > self.minLinks:
 				self.removeLinkMutation()
+				# print("link removed")
 				return "link removed"
 
 			# randomly add sensor to a link without sensor
@@ -549,8 +725,21 @@ class SOLUTION_AUTO_3D():
 		# change brain
 		if self.random.random() < self.mutateBrainProb:
 			# print("changing brain")
-			randomRow = self.random.randint(0,self.weights.shape[0]-1)
-			randomCol = self.random.randint(0,self.weights.shape[1]-1)
-			self.weights[randomRow][randomCol] = random.random()*2 - 1
+			
+			if not self.useHiddenNeurons:
+				randomRow = self.random.randint(0,self.weights.shape[0]-1)
+				randomCol = self.random.randint(0,self.weights.shape[1]-1)
+				self.weights[randomRow][randomCol] = random.random()*2 - 1
+			else:
+				randomMat  = self.random.randint(0,1)
+				if randomMat == 0:
+					randomRow = self.random.randint(0,self.weightsIH.shape[0]-1)
+					randomCol = self.random.randint(0,self.weightsIH.shape[1]-1)
+					self.weightsIH[randomRow][randomCol] = random.random()*2 - 1
+				else:
+					randomRow = self.random.randint(0,self.weightsHO.shape[0]-1)
+					randomCol = self.random.randint(0,self.weightsHO.shape[1]-1)
+					self.weightsHO[randomRow][randomCol] = random.random()*2 - 1
+
 			return "brain mutated"
 

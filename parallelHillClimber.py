@@ -8,11 +8,11 @@ import random
 from collections import defaultdict
 
 class PARALLEL_HILL_CLIMBER():
-	def __init__(self, show_random, randomSeed, exp_number, run_number):
+	def __init__(self, show_random, randomSeed, exp_number, run_number, use_hidden_neurons):
 		for file in os.listdir("."):
 			if file.startswith("brain") or file.startswith("fitness") or file.startswith("body"):
 				os.system("rm {}".format(file))
-
+		self.use_hidden_neurons = use_hidden_neurons
 		self.parents = {}
 		self.run_number = run_number
 		self.exp_number = exp_number
@@ -28,15 +28,24 @@ class PARALLEL_HILL_CLIMBER():
 			self.bodyMutationRate = 0
 			self.brainMutationRate = 1
 
-		else:
+		elif exp_number == 1:
 			self.bodyMutationRate = 1
 			self.brainMutationRate = 1 - self.bodyMutationRate
+
+		elif exp_number == 2:
+			self.bodyMutationRate = 1
+			self.brainMutationRate = 1 - self.bodyMutationRate
+
+		elif exp_number == 3:
+			self.bodyMutationRate = 0
+			self.brainMutationRate = 1
+
 
 		self.lineage = {}
 		self.mutations = {}
 		for i in range(c.populationSize):
 			randomSeed = self.random.randrange(1000000)
-			self.parents[i] = SOLUTION_AUTO_3D(self.nextAvailableID, fromScratch = True, randSeed = randomSeed)
+			self.parents[i] = SOLUTION_AUTO_3D(self.nextAvailableID, fromScratch = True, randSeed = randomSeed, useHiddenNeurons = self.use_hidden_neurons)
 			self.nextAvailableID+=1
 			self.lineage[i] = []
 			self.mutations[i] = []
@@ -187,6 +196,8 @@ class PARALLEL_HILL_CLIMBER():
 	def __del__(self):
 		# with open('./bestFitnessVals/bestCreatureFitnessVals_' + str(self.randomSeed) + '.pkl' , 'wb') as f:
 		# 	pickle.dump(self.best_creature_fitness, f)
+		# time.sleep(1000000000)
+		# return
 		self.saveBestCreatureIndex()
 		self.saveBestFitnessValues()
 		self.saveAverageFitnessValues()
