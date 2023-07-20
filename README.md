@@ -8,7 +8,7 @@ Following is a submission for final project of Artificial life [course](https://
 
 # Summary 2 minute video
 
-[Youtube video](https://youtu.be/m7cQinZQo4g)
+[Youtube video](https://youtu.be/Es2LF1JNx6I)
 
 # B-Roll (extra footage of interesting creatures)
 
